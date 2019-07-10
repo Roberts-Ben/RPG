@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class ATBBar : MonoBehaviour
 {
+    public int entityID;
     public Image fillBar;
 
     public float fillDuration;
@@ -10,9 +11,15 @@ public class ATBBar : MonoBehaviour
 
     void Update()
     {
+        if(TurnManager.instance.turnAction)
+        {
+            return;
+        }
+
         if(fillAmount >= 1)
         {
-            //Stop time and process turn
+            TurnManager.instance.TurnReady(entityID);
+            return;
         }
 
         fillAmount += 1.0f / fillDuration * Time.deltaTime;
