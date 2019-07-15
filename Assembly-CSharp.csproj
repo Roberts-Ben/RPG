@@ -57,6 +57,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\ATBBar.cs" />
      <Compile Include="Assets\Scripts\BaseClass.cs" />
+     <Compile Include="Assets\Scripts\ControllerRefocus.cs" />
      <Compile Include="Assets\Scripts\TurnManager.cs" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />

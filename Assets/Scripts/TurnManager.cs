@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
 public class TurnManager : MonoBehaviour
@@ -8,7 +9,8 @@ public class TurnManager : MonoBehaviour
 
     public GameObject commandPanel;
     public GameObject commandArrow;
-    public List<Image> commandButtons;
+    public List<GameObject> commandButtons;
+    public List<GameObject> attackCommandButtons;
 
     public GameObject targetArrow;
 
@@ -77,7 +79,7 @@ public class TurnManager : MonoBehaviour
                 }
 
                 cmdMenuState = (COMMANDMENUSTATE)activeCommand;
-                commandArrow.GetComponent<RectTransform>().localPosition = commandButtons[activeCommand].rectTransform.localPosition + new Vector3(0, -80, 0);
+                commandArrow.GetComponent<RectTransform>().localPosition = EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform>().localPosition + new Vector3(-150, 0, 0);
 
                 switch (cmdMenuState)
                 {
@@ -85,6 +87,9 @@ public class TurnManager : MonoBehaviour
                         if (Input.GetKeyDown(KeyCode.Return))
                         {
                             cmdState = COMMANDSTATE.Attack;
+
+                            ClearCommandList(cmdMenuState);
+
                             targetArrow.transform.position = enemies[0].transform.position + Vector3.up;
                             targetArrow.SetActive(true);
                         }
@@ -100,7 +105,7 @@ public class TurnManager : MonoBehaviour
             
             if(cmdState == COMMANDSTATE.Attack)
             {
-                if(Input.GetKeyDown(KeyCode.UpArrow))
+                if(Input.GetKeyDown(KeyCode.DownArrow))
                 {
                     targetEnemy += 1;
                 }
@@ -109,16 +114,18 @@ public class TurnManager : MonoBehaviour
                     targetEnemy -= 1;
                 }
 
-                if (targetEnemy > enemies.Count)
+                if (targetEnemy >= enemies.Count)
                 {
                     targetEnemy = 0;
                 }
                 if (targetEnemy < 0)
                 {
-                    targetEnemy = enemies.Count;
+                    targetEnemy = enemies.Count - 1;
                 }
 
-                targetArrow.transform.position = enemies[targetEnemy].transform.position + Vector3.up * 3;
+                targetArrow.transform.position = enemies[targetEnemy].transform.position + Vector3.up * 2;
+                Debug.Log(targetEnemy);
+                commandArrow.GetComponent<RectTransform>().localPosition = EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform>().localPosition + new Vector3(-150, 0, 0);
             }
         }
     }
@@ -128,5 +135,25 @@ public class TurnManager : MonoBehaviour
         turnAction = true;
         entityTurn = entity;
         commandPanel.SetActive(true);
+    }
+
+    public void ClearCommandList(COMMANDMENUSTATE state)
+    {
+        switch (state)
+        {
+            case COMMANDMENUSTATE.Attack:
+                foreach(GameObject go in commandButtons)
+                {
+                    go.SetActive(false);
+                }
+                foreach(GameObject go in attackCommandButtons)
+                {
+                    go.SetActive(true);
+                    EventSystem.current.SetSelectedGameObject(attackCommandButtons[0]);
+                }
+                return;
+            default:
+                return;
+        }
     }
 }
