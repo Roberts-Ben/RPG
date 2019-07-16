@@ -9,42 +9,30 @@ public class TurnManager : MonoBehaviour
 
     public GameObject commandPanel;
     public GameObject commandArrow;
+
     public List<GameObject> commandButtons;
     public List<GameObject> attackCommandButtons;
 
     public GameObject targetArrow;
 
     public bool turnAction = false;
-    public int entityTurn;
+    private int entityTurn;
     private int activeCommand;
 
     public List<GameObject> enemies;
     public int targetEnemy;
 
-    public enum COMMANDMENUSTATE
-    {
-        Attack,
-        Magic,
-        Defend,
-        Item
-    }
     public enum COMMANDSTATE
     {
-        Idle,
-        Attack,
-        Magic
+        IDLE,
+        PROCESS,
+        ATTACK,
+        MAGIC,
+        DEFEND,
+        ITEM
     }
 
-    public enum MAGICSTATE
-    {
-        Fire,
-        Blizzard,
-        Thunder
-    }
-
-    public COMMANDMENUSTATE cmdMenuState;
-    public COMMANDSTATE cmdState;
-    public MAGICSTATE magicState;
+    public COMMANDSTATE currentState;
 
     void Awake()
     {
@@ -56,92 +44,62 @@ public class TurnManager : MonoBehaviour
 
     void Update()
     {
-        if(turnAction)
+        switch (currentState)
         {
-            if(cmdState == COMMANDSTATE.Idle)
-            {
-                if (Input.GetKeyDown(KeyCode.UpArrow))
-                {
-                    activeCommand -= 1;
-                }
-                if (Input.GetKeyDown(KeyCode.DownArrow))
-                {
-                    activeCommand += 1;
-                }
-
-                if(activeCommand > 3)
-                {
-                    activeCommand = 0;
-                }
-                if(activeCommand < 0)
-                {
-                    activeCommand = 3;
-                }
-
-                cmdMenuState = (COMMANDMENUSTATE)activeCommand;
+            case COMMANDSTATE.IDLE: // ATB Bar filling
+                    break;
+            case COMMANDSTATE.PROCESS: // Navigating first command menu
                 commandArrow.GetComponent<RectTransform>().localPosition = EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform>().localPosition + new Vector3(-150, 0, 0);
 
-                switch (cmdMenuState)
+                if (Input.GetKeyDown(KeyCode.Return))
                 {
-                    case COMMANDMENUSTATE.Attack:
-                        if (Input.GetKeyDown(KeyCode.Return))
+                    for (int i = 0; i < commandButtons.Count; i++)
+                    {
+                        if (commandButtons[i] == EventSystem.current.currentSelectedGameObject)
                         {
-                            cmdState = COMMANDSTATE.Attack;
-
-                            ClearCommandList(cmdMenuState);
-
-                            targetArrow.transform.position = enemies[0].transform.position + Vector3.up;
-                            targetArrow.SetActive(true);
+                            activeCommand = i;
+                            ClearCommandList(activeCommand);
+                            return;
                         }
-                        break;
-                    case COMMANDMENUSTATE.Magic:
-                        break;
-                    case COMMANDMENUSTATE.Defend:
-                        break;
-                    case COMMANDMENUSTATE.Item:
-                        break;
+                    }
                 }
-            }
-            
-            if(cmdState == COMMANDSTATE.Attack)
-            {
-                if(Input.GetKeyDown(KeyCode.DownArrow))
+                break;
+            case COMMANDSTATE.ATTACK: // Navigating attack command menu
+                for (int i = 0; i < attackCommandButtons.Count; i++)
                 {
-                    targetEnemy += 1;
-                }
-                if (Input.GetKeyDown(KeyCode.UpArrow))
-                {
-                    targetEnemy -= 1;
-                }
-
-                if (targetEnemy >= enemies.Count)
-                {
-                    targetEnemy = 0;
-                }
-                if (targetEnemy < 0)
-                {
-                    targetEnemy = enemies.Count - 1;
+                    if (attackCommandButtons[i] == EventSystem.current.currentSelectedGameObject)
+                    {
+                        targetEnemy = i;
+                        break;
+                    }
                 }
 
                 targetArrow.transform.position = enemies[targetEnemy].transform.position + Vector3.up * 2;
-                Debug.Log(targetEnemy);
+                targetArrow.SetActive(true);
+
                 commandArrow.GetComponent<RectTransform>().localPosition = EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform>().localPosition + new Vector3(-150, 0, 0);
-            }
+
+                if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    Attack(entityTurn, targetEnemy);
+                }
+                break;      
         }
     }
 
     public void TurnReady(int entity)
     {
         turnAction = true;
+        currentState = COMMANDSTATE.PROCESS;
         entityTurn = entity;
         commandPanel.SetActive(true);
     }
 
-    public void ClearCommandList(COMMANDMENUSTATE state)
+    public void ClearCommandList(int state)
     {
         switch (state)
         {
-            case COMMANDMENUSTATE.Attack:
+            case 0:
                 foreach(GameObject go in commandButtons)
                 {
                     go.SetActive(false);
@@ -151,9 +109,18 @@ public class TurnManager : MonoBehaviour
                     go.SetActive(true);
                     EventSystem.current.SetSelectedGameObject(attackCommandButtons[0]);
                 }
+                currentState = COMMANDSTATE.ATTACK;
                 return;
             default:
                 return;
         }
+    }
+
+    public void Attack(int entity, int target)
+    {
+        Debug.LogWarning(entity + " is attacking " + target);
+        currentState = COMMANDSTATE.IDLE;
+        turnAction = false;
+        commandPanel.SetActive(false);
     }
 }
