@@ -10,15 +10,20 @@ public class TurnManager : MonoBehaviour
     public GameObject commandPanel;
     public GameObject commandArrow;
 
+    public List<GameObject> ATBBars;
+    public List<GameObject> LimitBars;
+
     public List<GameObject> commandButtons;
     public List<GameObject> attackCommandButtons;
 
+    public GameObject playerArrow;
     public GameObject targetArrow;
 
     public bool turnAction = false;
     private int entityTurn;
     private int activeCommand;
 
+    public List<GameObject> players;
     public List<GameObject> enemies;
     public int targetEnemy;
 
@@ -87,12 +92,23 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    public void TurnReady(int entity)
+    public void TurnReady(int entity, bool isATBBar)
     {
         turnAction = true;
-        currentState = COMMANDSTATE.PROCESS;
-        entityTurn = entity;
-        commandPanel.SetActive(true);
+
+        playerArrow.transform.position = players[entity].transform.position + Vector3.up * 2;
+        playerArrow.SetActive(true);
+
+        if (isATBBar)
+        {
+            entityTurn = entity;
+            commandPanel.SetActive(true);
+            ClearCommandList(99);
+        }
+        else
+        {
+            // Handle Limit attack
+        }
     }
 
     public void ClearCommandList(int state)
@@ -107,9 +123,21 @@ public class TurnManager : MonoBehaviour
                 foreach(GameObject go in attackCommandButtons)
                 {
                     go.SetActive(true);
-                    EventSystem.current.SetSelectedGameObject(attackCommandButtons[0]);
                 }
+                EventSystem.current.SetSelectedGameObject(attackCommandButtons[0]);
                 currentState = COMMANDSTATE.ATTACK;
+                return;
+            case 99:
+                foreach (GameObject go in attackCommandButtons)
+                {
+                    go.SetActive(false);
+                }
+                foreach (GameObject go in commandButtons)
+                {
+                    go.SetActive(true);
+                }
+                EventSystem.current.SetSelectedGameObject(commandButtons[0]);
+                currentState = COMMANDSTATE.PROCESS;
                 return;
             default:
                 return;
@@ -122,5 +150,8 @@ public class TurnManager : MonoBehaviour
         currentState = COMMANDSTATE.IDLE;
         turnAction = false;
         commandPanel.SetActive(false);
+        playerArrow.SetActive(false);
+        targetArrow.SetActive(false);
+        ATBBars[entity].GetComponent<ATBBar>().ResetBar();
     }
 }
