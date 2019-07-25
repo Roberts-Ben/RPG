@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using TMPro;
 
 public class TurnManager : MonoBehaviour
 {
@@ -24,6 +24,7 @@ public class TurnManager : MonoBehaviour
     private int activeCommand;
 
     public List<GameObject> players;
+    public List<GameObject> playerHighlights;
     public List<GameObject> enemies;
     public int targetEnemy;
 
@@ -86,7 +87,7 @@ public class TurnManager : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
-                    Attack(entityTurn, targetEnemy);
+                    Attack(entityTurn, targetEnemy, false);
                 }
                 break;      
         }
@@ -98,6 +99,7 @@ public class TurnManager : MonoBehaviour
 
         playerArrow.transform.position = players[entity].transform.position + Vector3.up * 2;
         playerArrow.SetActive(true);
+        playerHighlights[entity].SetActive(true);
 
         if (isATBBar)
         {
@@ -107,7 +109,7 @@ public class TurnManager : MonoBehaviour
         }
         else
         {
-            // Handle Limit attack
+            // NEED TO HANDLE LIMIT ATTACK
         }
     }
 
@@ -120,9 +122,10 @@ public class TurnManager : MonoBehaviour
                 {
                     go.SetActive(false);
                 }
-                foreach(GameObject go in attackCommandButtons)
+                for(int i = 0; i < attackCommandButtons.Count; i++)
                 {
-                    go.SetActive(true);
+                    attackCommandButtons[i].SetActive(true);
+                    attackCommandButtons[i].GetComponentInChildren<TMP_Text>().text = enemies[i].GetComponent<BaseClass>().GetName();
                 }
                 EventSystem.current.SetSelectedGameObject(attackCommandButtons[0]);
                 currentState = COMMANDSTATE.ATTACK;
@@ -144,14 +147,25 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    public void Attack(int entity, int target)
+    public void Attack(int entity, int target, bool enemyAttack)
     {
         Debug.LogWarning(entity + " is attacking " + target);
-        currentState = COMMANDSTATE.IDLE;
-        turnAction = false;
-        commandPanel.SetActive(false);
-        playerArrow.SetActive(false);
-        targetArrow.SetActive(false);
-        ATBBars[entity].GetComponent<ATBBar>().ResetBar();
+
+        if(enemyAttack)
+        {
+            // NEED TO HANDELE ENEMY TURNS
+        }
+        else
+        {
+            CombatManager.instance.MeleeAttack(players[entity].GetComponent<BaseClass>(), enemies[target].GetComponent<BaseClass>());
+
+            currentState = COMMANDSTATE.IDLE;
+            turnAction = false;
+            commandPanel.SetActive(false);
+            playerArrow.SetActive(false);
+            playerHighlights[entity].SetActive(false);
+            targetArrow.SetActive(false);
+            ATBBars[entity].GetComponent<ATBBar>().ResetBar();
+        }
     }
 }
