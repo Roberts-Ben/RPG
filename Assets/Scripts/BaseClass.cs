@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class BaseClass : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class BaseClass : MonoBehaviour
     public int constitution;
     public int intelligence;
     public int wisdom;
+
+    public List<string> spells;
 
     public float maxHealthPoints;
     public float currentHealthPoints;
@@ -62,6 +65,15 @@ public class BaseClass : MonoBehaviour
     public int GetMana()
     {
         return (int)currentManaPoints;
+    }
+
+    public int GetSpellCount()
+    {
+        return spells.Count;
+    }
+    public string GetSpells (int index)
+    {
+        return spells[index];
     }
 
 

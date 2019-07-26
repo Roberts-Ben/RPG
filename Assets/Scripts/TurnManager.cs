@@ -15,6 +15,7 @@ public class TurnManager : MonoBehaviour
 
     public List<GameObject> commandButtons;
     public List<GameObject> attackCommandButtons;
+    public List<GameObject> magicCommandButtons;
 
     public GameObject playerArrow;
     public GameObject targetArrow;
@@ -22,6 +23,8 @@ public class TurnManager : MonoBehaviour
     public bool turnAction = false;
     private int entityTurn;
     private int activeCommand;
+    private int selectedSpell;
+    private int selectedItem;
 
     public List<GameObject> players;
     public List<GameObject> playerHighlights;
@@ -34,11 +37,14 @@ public class TurnManager : MonoBehaviour
         PROCESS,
         ATTACK,
         MAGIC,
+        MAGICATTACK,
         DEFEND,
-        ITEM
+        ITEM,
+        ITEMUSE
     }
 
     public COMMANDSTATE currentState;
+    public COMMANDSTATE prevState;
 
     void Awake()
     {
@@ -65,6 +71,7 @@ public class TurnManager : MonoBehaviour
                         {
                             activeCommand = i;
                             ClearCommandList(activeCommand);
+                            prevState = COMMANDSTATE.PROCESS;
                             return;
                         }
                     }
@@ -88,8 +95,56 @@ public class TurnManager : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
                     Attack(entityTurn, targetEnemy, false);
+                    prevState = COMMANDSTATE.ATTACK;
                 }
-                break;      
+                break;
+            case COMMANDSTATE.MAGIC:
+                commandArrow.GetComponent<RectTransform>().localPosition = EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform>().localPosition + new Vector3(-150, 0, 0);
+
+                if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    for (int i = 0; i < magicCommandButtons.Count; i++)
+                    {
+                        if (magicCommandButtons[i] == EventSystem.current.currentSelectedGameObject)
+                        {
+                            selectedSpell = i;
+
+                            if (selectedSpell == 3) // TEMP CURE TEST
+                            {
+                                // HANDLE ALLY TARGETTING
+                            }
+                            else
+                            {
+                                ClearCommandList(0);
+                            }
+                            
+                            prevState = COMMANDSTATE.MAGIC;
+                            return;
+                        }
+                    }
+                }
+                break;
+            case COMMANDSTATE.MAGICATTACK: // Navigating attack command menu after choosign a spell
+                for (int i = 0; i < attackCommandButtons.Count; i++)
+                {
+                    if (attackCommandButtons[i] == EventSystem.current.currentSelectedGameObject)
+                    {
+                        targetEnemy = i;
+                        break;
+                    }
+                }
+
+                targetArrow.transform.position = enemies[targetEnemy].transform.position + Vector3.up * 2;
+                targetArrow.SetActive(true);
+
+                commandArrow.GetComponent<RectTransform>().localPosition = EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform>().localPosition + new Vector3(-150, 0, 0);
+
+                if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    Attack(entityTurn, targetEnemy, false);
+                    prevState = COMMANDSTATE.MAGICATTACK;
+                }
+                break;
         }
     }
 
@@ -117,12 +172,12 @@ public class TurnManager : MonoBehaviour
     {
         switch (state)
         {
-            case 0:
+            case 0: // Attacking
                 foreach(GameObject go in commandButtons)
                 {
                     go.SetActive(false);
                 }
-                for(int i = 0; i < attackCommandButtons.Count; i++)
+                for (int i = 0; i < attackCommandButtons.Count; i++)
                 {
                     attackCommandButtons[i].SetActive(true);
                     attackCommandButtons[i].GetComponentInChildren<TMP_Text>().text = enemies[i].GetComponent<BaseClass>().GetName();
@@ -130,8 +185,29 @@ public class TurnManager : MonoBehaviour
                 EventSystem.current.SetSelectedGameObject(attackCommandButtons[0]);
                 currentState = COMMANDSTATE.ATTACK;
                 return;
-            case 99:
+            case 1: // Choosing Spell
+                foreach (GameObject go in commandButtons)
+                {
+                    go.SetActive(false);
+                }
+                for (int i = 0; i < magicCommandButtons.Count; i++)
+                {
+                    if(players[i].GetComponent<BaseClass>().GetSpellCount() >= i)
+                    {
+                        magicCommandButtons[i].SetActive(true);
+                        magicCommandButtons[i].GetComponentInChildren<TMP_Text>().text = players[i].GetComponent<BaseClass>().GetSpells(i);
+                    }
+                }
+
+                EventSystem.current.SetSelectedGameObject(magicCommandButtons[0]);
+                currentState = COMMANDSTATE.MAGIC;
+                return;
+            case 99: // Default Clearall
                 foreach (GameObject go in attackCommandButtons)
+                {
+                    go.SetActive(false);
+                }
+                foreach (GameObject go in magicCommandButtons)
                 {
                     go.SetActive(false);
                 }
@@ -157,7 +233,15 @@ public class TurnManager : MonoBehaviour
         }
         else
         {
-            CombatManager.instance.MeleeAttack(players[entity].GetComponent<BaseClass>(), enemies[target].GetComponent<BaseClass>());
+            Debug.LogError(currentState + " : " + prevState);
+            if (currentState == COMMANDSTATE.ATTACK && prevState == COMMANDSTATE.PROCESS)
+            {
+                CombatManager.instance.MeleeAttack(players[entity].GetComponent<BaseClass>(), enemies[target].GetComponent<BaseClass>());
+            }
+            else if(currentState == COMMANDSTATE.ATTACK && prevState == COMMANDSTATE.MAGIC)
+            {
+                CombatManager.instance.MagicAttack(players[entity].GetComponent<BaseClass>(), enemies[target].GetComponent<BaseClass>(), selectedSpell);
+            }
 
             currentState = COMMANDSTATE.IDLE;
             turnAction = false;
