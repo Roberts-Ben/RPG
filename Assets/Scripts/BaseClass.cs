@@ -29,6 +29,13 @@ public class BaseClass : MonoBehaviour
     public float maxManaPoints;
     public float currentManaPoints;
 
+    public GameObject referenceObj;
+
+    void Awake()
+    {
+        referenceObj = this.gameObject;
+    }
+
     public string GetName()
     {
         return name;
@@ -80,5 +87,10 @@ public class BaseClass : MonoBehaviour
     public void UpdateHealth(int value)
     {
         currentHealthPoints -= value;
+    }
+
+    public GameObject GetObj()
+    {
+        return referenceObj;
     }
 }

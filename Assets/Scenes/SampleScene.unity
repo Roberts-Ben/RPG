@@ -2712,13 +2712,14 @@ MonoBehaviour:
   constitution: 10
   intelligence: 4
   wisdom: 3
-  Spells:
-  - Fire
+  spells:
   - Blizzard
+  - Cure
   maxHealthPoints: 150
   currentHealthPoints: 150
   maxManaPoints: 30
   currentManaPoints: 30
+  referenceObj: {fileID: 0}
 --- !u!1 &620281341
 GameObject:
   m_ObjectHideFlags: 0
@@ -3479,11 +3480,12 @@ MonoBehaviour:
   constitution: 7
   intelligence: 1
   wisdom: 1
-  Spells: []
+  spells: []
   maxHealthPoints: 100
   currentHealthPoints: 100
   maxManaPoints: 10
   currentManaPoints: 10
+  referenceObj: {fileID: 0}
 --- !u!1 &783216228
 GameObject:
   m_ObjectHideFlags: 0
@@ -4773,6 +4775,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 268aadee3f5eaa44c9d8d94af27bcaec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damageText: {fileID: 4252313986028766476, guid: f334e0b9a2cbdaf4cac4a6fba672e884,
+    type: 3}
+  canvas: {fileID: 1537527330}
 --- !u!1 &967012598
 GameObject:
   m_ObjectHideFlags: 0
@@ -5757,11 +5762,12 @@ MonoBehaviour:
   constitution: 7
   intelligence: 1
   wisdom: 1
-  Spells: []
+  spells: []
   maxHealthPoints: 100
   currentHealthPoints: 100
   maxManaPoints: 10
   currentManaPoints: 10
+  referenceObj: {fileID: 0}
 --- !u!1 &1161304369
 GameObject:
   m_ObjectHideFlags: 0
@@ -7190,12 +7196,13 @@ MonoBehaviour:
   constitution: 6
   intelligence: 2
   wisdom: 1
-  Spells:
+  spells:
   - Fire
   maxHealthPoints: 100
   currentHealthPoints: 100
   maxManaPoints: 10
   currentManaPoints: 10
+  referenceObj: {fileID: 0}
 --- !u!1 &1448668599
 GameObject:
   m_ObjectHideFlags: 0
@@ -7308,11 +7315,12 @@ MonoBehaviour:
   constitution: 7
   intelligence: 1
   wisdom: 1
-  Spells: []
+  spells: []
   maxHealthPoints: 100
   currentHealthPoints: 100
   maxManaPoints: 10
   currentManaPoints: 10
+  referenceObj: {fileID: 0}
 --- !u!1 &1459537683
 GameObject:
   m_ObjectHideFlags: 0
@@ -8652,7 +8660,7 @@ MonoBehaviour:
   constitution: 3
   intelligence: 8
   wisdom: 9
-  Spells:
+  spells:
   - Fire
   - Blizzard
   - Thunder
@@ -8661,6 +8669,7 @@ MonoBehaviour:
   currentHealthPoints: 70
   maxManaPoints: 100
   currentManaPoints: 100
+  referenceObj: {fileID: 0}
 --- !u!1 &1722391340
 GameObject:
   m_ObjectHideFlags: 0
@@ -9823,15 +9832,15 @@ MonoBehaviour:
   constitution: 3
   intelligence: 9
   wisdom: 8
-  Spells:
+  spells:
   - Fire
   - Blizzard
   - Thunder
-  - Cure
   maxHealthPoints: 60
   currentHealthPoints: 60
   maxManaPoints: 100
   currentManaPoints: 100
+  referenceObj: {fileID: 0}
 --- !u!1 &1936146127
 GameObject:
   m_ObjectHideFlags: 0
@@ -10213,11 +10222,12 @@ MonoBehaviour:
   constitution: 7
   intelligence: 1
   wisdom: 1
-  Spells: []
+  spells: []
   maxHealthPoints: 100
   currentHealthPoints: 100
   maxManaPoints: 10
   currentManaPoints: 10
+  referenceObj: {fileID: 0}
 --- !u!1 &1997273159
 GameObject:
   m_ObjectHideFlags: 0

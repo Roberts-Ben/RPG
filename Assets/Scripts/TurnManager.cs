@@ -192,10 +192,10 @@ public class TurnManager : MonoBehaviour
                 }
                 for (int i = 0; i < magicCommandButtons.Count; i++)
                 {
-                    if(players[i].GetComponent<BaseClass>().GetSpellCount() >= i)
+                    if(players[entityTurn].GetComponent<BaseClass>().GetSpellCount() > i)
                     {
                         magicCommandButtons[i].SetActive(true);
-                        magicCommandButtons[i].GetComponentInChildren<TMP_Text>().text = players[i].GetComponent<BaseClass>().GetSpells(i);
+                        magicCommandButtons[i].GetComponentInChildren<TMP_Text>().text = players[entityTurn].GetComponent<BaseClass>().GetSpells(i);
                     }
                 }
 
