@@ -148,23 +148,32 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    public void TurnReady(int entity, bool isATBBar)
+    public void TurnReady(int entity, bool isATBBar, bool isPlayer)
     {
         turnAction = true;
+        entityTurn = entity;
 
-        playerArrow.transform.position = players[entity].transform.position + Vector3.up * 2;
-        playerArrow.SetActive(true);
-        playerHighlights[entity].SetActive(true);
-
-        if (isATBBar)
+        if (isPlayer)
         {
-            entityTurn = entity;
-            commandPanel.SetActive(true);
-            ClearCommandList(99);
+            playerArrow.transform.position = players[entity].transform.position + Vector3.up * 2;
+            playerArrow.SetActive(true);
+            playerHighlights[entity].SetActive(true);
+
+            if (isATBBar)
+            {
+                commandPanel.SetActive(true);
+                ClearCommandList(99);
+
+            }
+            else
+            {
+                // NEED TO HANDLE LIMIT ATTACK
+            }
         }
         else
         {
-            // NEED TO HANDLE LIMIT ATTACK
+            Debug.Log("Enemy turn");
+            Attack(entityTurn, 0, false);
         }
     }
 
@@ -174,6 +183,10 @@ public class TurnManager : MonoBehaviour
         {
             case 0: // Attacking
                 foreach(GameObject go in commandButtons)
+                {
+                    go.SetActive(false);
+                }
+                foreach (GameObject go in magicCommandButtons)
                 {
                     go.SetActive(false);
                 }
@@ -223,13 +236,30 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    public void Attack(int entity, int target, bool enemyAttack)
+    public void Attack(int entity, int target, bool playerAttack)
     {
-        Debug.LogWarning(entity + " is attacking " + target);
-
-        if(enemyAttack)
+        if(!playerAttack)
         {
-            // NEED TO HANDELE ENEMY TURNS
+            int newEntity = entity -= 4;
+            bool meleeAttack = Random.Range(0, 1) == 0 ? true : false;
+            int targetPlayer = Random.Range(0, players.Count);
+
+            if(meleeAttack)
+            {
+                Debug.Log("Enemy is melee attacking");
+                CombatManager.instance.MeleeAttack(enemies[entity].GetComponent<BaseClass>(), players[targetPlayer].GetComponent<BaseClass>());
+            }
+            else
+            {
+                // NEED TO HANDLE ENEMY MAGIC ATTACKS
+                Debug.Log("[TEMP] Enemy is melee attacking");
+                CombatManager.instance.MeleeAttack(enemies[entity].GetComponent<BaseClass>(), players[targetPlayer].GetComponent<BaseClass>());
+            }
+            Debug.LogWarning("Enemy attack over");
+
+            currentState = COMMANDSTATE.IDLE;
+            turnAction = false;
+            ATBBars[entity].GetComponent<ATBBar>().ResetBar();
         }
         else
         {

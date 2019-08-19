@@ -17,6 +17,7 @@ public class CombatManager : MonoBehaviour
 
     public void MeleeAttack(BaseClass entity, BaseClass target)
     {
+        Debug.LogWarning("Melee attack start");
         int damage = entity.strength - target.constitution;
 
         if(damage < 0)

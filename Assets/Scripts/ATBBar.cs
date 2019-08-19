@@ -5,6 +5,7 @@ public class ATBBar : MonoBehaviour
 {
     public GameObject thisObj;
     public int entityID;
+    public bool isPlayer;
     public bool isATBBar;
     public Image fillBar;
 
@@ -25,7 +26,7 @@ public class ATBBar : MonoBehaviour
 
         if(fillAmount >= 1)
         {
-            TurnManager.instance.TurnReady(entityID, isATBBar); // Need to distinguish ATB/Limit
+            TurnManager.instance.TurnReady(entityID, isATBBar, isPlayer);
             return;
         }
 
