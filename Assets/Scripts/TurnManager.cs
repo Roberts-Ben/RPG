@@ -27,6 +27,7 @@ public class TurnManager : MonoBehaviour
     private int selectedItem;
 
     public List<GameObject> players;
+    public List<GameObject> playerHUDs;
     public List<GameObject> playerHighlights;
     public List<GameObject> enemies;
     public int targetEnemy;
@@ -94,7 +95,7 @@ public class TurnManager : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
-                    Attack(entityTurn, targetEnemy, false);
+                    Attack(entityTurn, targetEnemy, true);
                     prevState = COMMANDSTATE.ATTACK;
                 }
                 break;
@@ -141,7 +142,7 @@ public class TurnManager : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
-                    Attack(entityTurn, targetEnemy, false);
+                    Attack(entityTurn, targetEnemy, true);
                     prevState = COMMANDSTATE.MAGICATTACK;
                 }
                 break;
@@ -172,7 +173,6 @@ public class TurnManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Enemy turn");
             Attack(entityTurn, 0, false);
         }
     }
@@ -246,24 +246,22 @@ public class TurnManager : MonoBehaviour
 
             if(meleeAttack)
             {
-                Debug.Log("Enemy is melee attacking");
                 CombatManager.instance.MeleeAttack(enemies[entity].GetComponent<BaseClass>(), players[targetPlayer].GetComponent<BaseClass>());
             }
             else
             {
                 // NEED TO HANDLE ENEMY MAGIC ATTACKS
-                Debug.Log("[TEMP] Enemy is melee attacking");
                 CombatManager.instance.MeleeAttack(enemies[entity].GetComponent<BaseClass>(), players[targetPlayer].GetComponent<BaseClass>());
             }
-            Debug.LogWarning("Enemy attack over");
 
             currentState = COMMANDSTATE.IDLE;
             turnAction = false;
-            ATBBars[entity].GetComponent<ATBBar>().ResetBar();
+            ATBBars[entity + 4].GetComponent<ATBBar>().ResetBar();
+
+            playerHUDs[targetPlayer].GetComponent<CharacterHUD>().UpdateStats();
         }
         else
         {
-            Debug.LogError(currentState + " : " + prevState);
             if (currentState == COMMANDSTATE.ATTACK && prevState == COMMANDSTATE.PROCESS)
             {
                 CombatManager.instance.MeleeAttack(players[entity].GetComponent<BaseClass>(), enemies[target].GetComponent<BaseClass>());

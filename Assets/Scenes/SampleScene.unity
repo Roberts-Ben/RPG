@@ -3876,7 +3876,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Enemy D
   role: 0
-  strength: 3
+  strength: 15
   dexterity: 6
   constitution: 7
   intelligence: 1
@@ -5274,6 +5274,11 @@ MonoBehaviour:
   - {fileID: 1673803719}
   - {fileID: 608616456}
   - {fileID: 1889497980}
+  playerHUDs:
+  - {fileID: 434032459}
+  - {fileID: 1199419135}
+  - {fileID: 1536964961}
+  - {fileID: 589396447}
   playerHighlights:
   - {fileID: 193496465}
   - {fileID: 1940387403}
@@ -6621,7 +6626,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Enemy B
   role: 0
-  strength: 3
+  strength: 15
   dexterity: 4
   constitution: 7
   intelligence: 1
@@ -8223,7 +8228,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Enemy A
   role: 0
-  strength: 3
+  strength: 15
   dexterity: 3
   constitution: 7
   intelligence: 1
@@ -11529,7 +11534,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Enemy C
   role: 0
-  strength: 3
+  strength: 15
   dexterity: 5
   constitution: 7
   intelligence: 1

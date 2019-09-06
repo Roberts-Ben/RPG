@@ -17,8 +17,9 @@ public class CharacterHUD : MonoBehaviour
         characterMP.text = "" + characterReference.GetMana();
     }
 
-    void Update()
+    public void UpdateStats()
     {
-        
+        characterHP.text = "" + characterReference.GetHealth();
+        characterMP.text = "" + characterReference.GetMana();
     }
 }
