@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "F:\\Unity Projects\\RPG\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{0BE8E511-D506-A1D0-E67D-923A5ED26D39}|Assembly-CSharp.csproj|f:\\unity projects\\rpg\\assets\\scripts\\baseclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0BE8E511-D506-A1D0-E67D-923A5ED26D39}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\baseclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "BaseClass.cs",
+              "DocumentMoniker": "F:\\Unity Projects\\RPG\\Assets\\Scripts\\BaseClass.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\BaseClass.cs",
+              "ToolTip": "F:\\Unity Projects\\RPG\\Assets\\Scripts\\BaseClass.cs",
+              "RelativeToolTip": "Assets\\Scripts\\BaseClass.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAgwBMAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-09T20:17:25.684Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
