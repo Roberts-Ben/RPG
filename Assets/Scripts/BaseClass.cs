@@ -13,7 +13,22 @@ public class BaseClass : MonoBehaviour
         CLERIC // Healer
     }
 
-    public string name;
+    public enum SPELLS
+    {
+        FIRE,
+        BLIZZARD,
+        THUNDER,
+        CURE
+    }
+
+    public enum ITEMS
+    {
+        POTION,
+        ELIXER,
+        PHOENIXDOWN
+    }
+
+    public new string name;
     public ROLES role;
 
     public int strength;
@@ -22,7 +37,10 @@ public class BaseClass : MonoBehaviour
     public int intelligence;
     public int wisdom;
 
-    public List<string> spells;
+    public int LimitDamage;
+
+    public List<SPELLS> spells;
+    public List<ITEMS> items;
 
     public float maxHealthPoints;
     public float currentHealthPoints;
@@ -31,7 +49,7 @@ public class BaseClass : MonoBehaviour
 
     public GameObject referenceObj;
 
-    void Awake()
+    private void Awake()
     {
         referenceObj = this.gameObject;
     }
@@ -78,15 +96,33 @@ public class BaseClass : MonoBehaviour
     {
         return spells.Count;
     }
-    public string GetSpells (int index)
+    public SPELLS GetSpells (int index)
     {
         return spells[index];
     }
-
-
-    public void UpdateHealth(int value)
+    public int GetItemCount()
     {
-        currentHealthPoints -= value;
+        return items.Count;
+    }
+
+    public void UpdateHealth(int value, bool damage)
+    {
+        if(damage)
+        {
+            currentHealthPoints -= value;
+            if(currentHealthPoints <= 0)
+            {
+                // DEATH
+            }
+        }
+        else
+        {
+            currentHealthPoints += value;
+            if (currentHealthPoints > maxHealthPoints)
+            {
+                currentHealthPoints = maxHealthPoints;
+            }
+        } 
     }
 
     public GameObject GetObj()
