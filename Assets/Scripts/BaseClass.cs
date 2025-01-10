@@ -37,6 +37,8 @@ public class BaseClass : MonoBehaviour
     public int intelligence;
     public int wisdom;
 
+    public bool isAlive = true;
+
     public int LimitDamage;
 
     public List<SPELLS> spells;
@@ -112,7 +114,7 @@ public class BaseClass : MonoBehaviour
             currentHealthPoints -= value;
             if(currentHealthPoints <= 0)
             {
-                // DEATH
+                isAlive = false;
             }
         }
         else

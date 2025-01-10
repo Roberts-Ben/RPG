@@ -26,8 +26,17 @@ public class ATBBar : MonoBehaviour
 
         if(fillAmount >= 1)
         {
-            TurnManager.instance.TurnReady(entityID, isATBBar, isPlayer);
-            return;
+            if(!isPlayer)
+            {
+                if (TurnManager.instance.enemies[entityID - 4].GetComponent<BaseClass>().isAlive)
+                {
+                    TurnManager.instance.TurnReady(entityID, isATBBar, isPlayer);
+                }
+            }
+            else if (TurnManager.instance.players[entityID].GetComponent<BaseClass>().isAlive)
+            {
+                TurnManager.instance.TurnReady(entityID, isATBBar, isPlayer);
+            }
         }
 
         fillAmount += 1.0f / fillDuration * Time.deltaTime;
