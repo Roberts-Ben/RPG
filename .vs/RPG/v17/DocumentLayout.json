@@ -1,9 +1,13 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "F:\\Unity Projects\\RPG\\",
+  "WorkspaceRootPath": "C:\\Users\\Ben Roberts\\Documents\\UnityProjects\\RPG\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0BE8E511-D506-A1D0-E67D-923A5ED26D39}|Assembly-CSharp.csproj|f:\\unity projects\\rpg\\assets\\scripts\\baseclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{0BE8E511-D506-A1D0-E67D-923A5ED26D39}|Assembly-CSharp.csproj|c:\\users\\ben roberts\\documents\\unityprojects\\rpg\\assets\\scripts\\characterhud.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0BE8E511-D506-A1D0-E67D-923A5ED26D39}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\characterhud.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0BE8E511-D506-A1D0-E67D-923A5ED26D39}|Assembly-CSharp.csproj|c:\\users\\ben roberts\\documents\\unityprojects\\rpg\\assets\\scripts\\baseclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0BE8E511-D506-A1D0-E67D-923A5ED26D39}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\baseclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -19,12 +23,29 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "CharacterHUD.cs",
+              "DocumentMoniker": "C:\\Users\\Ben Roberts\\Documents\\UnityProjects\\RPG\\Assets\\Scripts\\CharacterHUD.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\CharacterHUD.cs",
+              "ToolTip": "C:\\Users\\Ben Roberts\\Documents\\UnityProjects\\RPG\\Assets\\Scripts\\CharacterHUD.cs",
+              "RelativeToolTip": "Assets\\Scripts\\CharacterHUD.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-10T10:04:28.774Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "BaseClass.cs",
-              "DocumentMoniker": "F:\\Unity Projects\\RPG\\Assets\\Scripts\\BaseClass.cs",
+              "DocumentMoniker": "C:\\Users\\Ben Roberts\\Documents\\UnityProjects\\RPG\\Assets\\Scripts\\BaseClass.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\BaseClass.cs",
-              "ToolTip": "F:\\Unity Projects\\RPG\\Assets\\Scripts\\BaseClass.cs",
+              "ToolTip": "C:\\Users\\Ben Roberts\\Documents\\UnityProjects\\RPG\\Assets\\Scripts\\BaseClass.cs",
               "RelativeToolTip": "Assets\\Scripts\\BaseClass.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAgwBMAAAAZAAAAAAAAAA==",
+              "ViewState": "AgIAAEsAAAAAAAAAAAAUwFcAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-09T20:17:25.684Z",
               "EditorCaption": ""
