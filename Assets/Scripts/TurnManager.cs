@@ -410,13 +410,10 @@ public class TurnManager : MonoBehaviour
             bool meleeAttack = Random.Range(0, 1) == 0;
             target = Random.Range(0, players.Count);
 
-            Debug.Log("enemy " + entity + " " + enemies[entity].name + " is attacking: " + target + " " + players[target].name);
-
             if (meleeAttack)
             {
                 targetPosition = players[target].GetComponent<BaseClass>().GetStartingPos() + attackOffset;
                 enemies[entity].GetComponent<Animator>().SetTrigger("MeleeAttack");
-                Debug.Log("Test: " + enemies[entity].GetComponent<AnimationManager>());
                 StartCoroutine(enemies[entity].GetComponent<AnimationManager>().AttackAnimLerp(entity, targetPosition, 0.5f));
                 CombatManager.instance.MeleeAttack(enemies[entity].GetComponent<BaseClass>(), players[target].GetComponent<BaseClass>());
             }
@@ -465,8 +462,11 @@ public class TurnManager : MonoBehaviour
 
     public void Limit(int entity, int target)
     {
+        targetPosition = enemies[target].GetComponent<BaseClass>().GetStartingPos() - attackOffset;
         players[entity].GetComponent<Animator>().SetTrigger("Limit");
         enemies[target].GetComponent<Animator>().SetTrigger("Damaged");
+
+        StartCoroutine(players[entity].GetComponent<AnimationManager>().AttackAnimLerp(entity, targetPosition, 0.5f));
         CombatManager.instance.LimitAttack(players[entity].GetComponent<BaseClass>(), enemies[target].GetComponent<BaseClass>());
         EndAction(entity, target, true);
         CheckAlive(target, true);
@@ -569,7 +569,12 @@ public class TurnManager : MonoBehaviour
         }
         for (int i = 0; i < enemies.Count; i++)
         {
-            enemies[i].GetComponent<BaseClass>().isAlive = true;
+            BaseClass classref = enemies[i].GetComponent<BaseClass>();
+            
+            classref.currentHealthPoints = classref.maxHealthPoints;
+            classref.currentManaPoints = classref.maxManaPoints;
+            classref.isAlive = true;
+            enemies[i].GetComponent<Animator>().ResetTrigger("Death");
             enemies[i].GetComponent<Animator>().SetTrigger("Respawn");
         }
         victory = false;

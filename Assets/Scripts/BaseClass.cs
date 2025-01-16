@@ -121,6 +121,7 @@ public class BaseClass : MonoBehaviour
             currentHealthPoints -= value;
             if(currentHealthPoints <= 0)
             {
+                currentHealthPoints = 0;
                 isAlive = false;
             }
         }
