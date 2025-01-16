@@ -50,10 +50,12 @@ public class BaseClass : MonoBehaviour
     public float currentManaPoints;
 
     public GameObject referenceObj;
+    public Vector3 startingPosition;
 
     private void Awake()
     {
         referenceObj = this.gameObject;
+        startingPosition = referenceObj.transform.position;
     }
 
     public string GetName()
@@ -105,6 +107,11 @@ public class BaseClass : MonoBehaviour
     public int GetItemCount()
     {
         return items.Count;
+    }
+
+    public Vector3 GetStartingPos()
+    {
+        return startingPosition;
     }
 
     public void UpdateHealth(int value, bool damage)

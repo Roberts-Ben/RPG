@@ -19,28 +19,31 @@ public class ATBBar : MonoBehaviour
 
     void Update()
     {
-        if(TurnManager.instance.turnAction)
+        if(!TurnManager.instance.GetBattleOver())
         {
-            return;
-        }
-
-        if(fillAmount >= 1)
-        {
-            if(!isPlayer)
+            if (TurnManager.instance.turnAction)
             {
-                if (TurnManager.instance.enemies[entityID - 4].GetComponent<BaseClass>().isAlive)
+                return;
+            }
+
+            if (fillAmount >= 1)
+            {
+                if (!isPlayer)
+                {
+                    if (TurnManager.instance.enemies[entityID - 4].GetComponent<BaseClass>().isAlive)
+                    {
+                        TurnManager.instance.TurnReady(entityID, isATBBar, isPlayer);
+                    }
+                }
+                else if (TurnManager.instance.players[entityID].GetComponent<BaseClass>().isAlive)
                 {
                     TurnManager.instance.TurnReady(entityID, isATBBar, isPlayer);
                 }
             }
-            else if (TurnManager.instance.players[entityID].GetComponent<BaseClass>().isAlive)
-            {
-                TurnManager.instance.TurnReady(entityID, isATBBar, isPlayer);
-            }
-        }
 
-        fillAmount += 1.0f / fillDuration * Time.deltaTime;
-        fillBar.fillAmount = fillAmount;
+            fillAmount += 1.0f / fillDuration * Time.deltaTime;
+            fillBar.fillAmount = fillAmount;
+        }
     }
 
     public void ResetBar()
