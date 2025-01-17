@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 public class CombatManager : MonoBehaviour
 {
     public static CombatManager instance;
     public GameObject damageText;
     public GameObject canvas;
+
+    public List<GameObject> spellPrefabs;
 
     void Awake()
     {
@@ -17,7 +20,7 @@ public class CombatManager : MonoBehaviour
 
     public void MeleeAttack(BaseClass entity, BaseClass target)
     {
-        int damage = entity.strength - target.constitution;
+        float damage = entity.strength;
 
         if(damage < 0)
         {
@@ -26,13 +29,15 @@ public class CombatManager : MonoBehaviour
 
         target.UpdateHealth(damage, true);
         SpawnDamageText(damage, target, true);
-        Debug.LogWarning(entity.strength - target.constitution + " damage inflicted to " + target.GetName());
+        Debug.LogWarning(entity.strength+ " damage inflicted to " + target.GetName());
         Debug.LogWarning(target.GetName() + " has " + target.GetHealth() + "HP remaining");
     }
 
     public void MagicAttack(BaseClass entity, BaseClass target, int spell)
     {
-        int damage = entity.intelligence - target.constitution;
+        float damage = entity.intelligence;
+
+        Instantiate(spellPrefabs[spell], target.GetStartingPos(), Quaternion.identity);
 
         if (damage < 0)
         {
@@ -42,13 +47,15 @@ public class CombatManager : MonoBehaviour
         target.UpdateHealth(damage, true);
         SpawnDamageText(damage, target, true);
         Debug.LogWarning("Casting spell " + entity.GetSpells(spell));
-        Debug.LogWarning(entity.intelligence - target.constitution + " damage inflicted to " + target.GetName());
+        Debug.LogWarning(entity.intelligence + " damage inflicted to " + target.GetName());
         Debug.LogWarning(target.GetName() + " has " + target.GetHealth() + "HP remaining");
     }
 
     public void MagicHealing(BaseClass entity, BaseClass target)
     {
-        int healing = entity.intelligence += target.constitution;
+        float healing = entity.intelligence;
+
+        Instantiate(spellPrefabs[3], target.GetStartingPos(), Quaternion.identity);
 
         target.UpdateHealth(healing, false);
         SpawnDamageText(healing, target, false);
@@ -60,7 +67,7 @@ public class CombatManager : MonoBehaviour
         SpawnDamageText(entity.LimitDamage, target, true);
     }
 
-    public void SpawnDamageText(int damage, BaseClass target, bool isDamage)
+    public void SpawnDamageText(float damage, BaseClass target, bool isDamage)
     {
         GameObject dmgText = Instantiate(damageText);
         if (!isDamage)

@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using TMPro;
-using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class TurnManager : MonoBehaviour
 {
@@ -10,9 +10,10 @@ public class TurnManager : MonoBehaviour
 
     public GameObject commandPanel;
     public GameObject commandArrow;
+    private RectTransform commandArrowRectTransform;
     public GameObject topPanel;
 
-    private Vector3 commandArrowOffset = new(-90, 0, 0);
+    private Vector3 commandArrowOffset = new(-185, 0, 0);
     private Vector3 attackOffset = new(2, 0, 0);
     private Vector3 targetPosition;
 
@@ -37,6 +38,7 @@ public class TurnManager : MonoBehaviour
     private int activeCommand;
     private int selectedSpell;
     private int selectedItem;
+    private bool isDefending;
 
     public List<GameObject> players;
     public List<GameObject> playerHUDs;
@@ -44,7 +46,6 @@ public class TurnManager : MonoBehaviour
     public List<GameObject> enemies;
     public int targetEnemy;
     public int targetAlly;
-
     public enum COMMANDSTATE
     {
         IDLE,
@@ -69,10 +70,13 @@ public class TurnManager : MonoBehaviour
         {
             instance = this;
         }
+        commandArrowRectTransform = commandArrow.GetComponent<RectTransform>();
     }
 
     void Update()
     {
+        GameObject selectedEventGameObject = EventSystem.current.currentSelectedGameObject;
+        RectTransform selectedEventrectTransform = selectedEventGameObject.GetComponent<RectTransform>();
         if (!victory && !defeat)
         {
             switch (currentState)
@@ -80,13 +84,13 @@ public class TurnManager : MonoBehaviour
                 case COMMANDSTATE.IDLE: // ATB Bar filling
                     break;
                 case COMMANDSTATE.PROCESS: // Navigating first command menu
-                    commandArrow.GetComponent<RectTransform>().localPosition = EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform>().localPosition + commandArrowOffset;
+                    commandArrowRectTransform.localPosition = selectedEventrectTransform.localPosition + commandArrowOffset;
 
                     if (Input.GetKeyDown(KeyCode.Return))
                     {
                         for (int i = 0; i < commandButtons.Count; i++)
                         {
-                            if (commandButtons[i] == EventSystem.current.currentSelectedGameObject)
+                            if (commandButtons[i] == selectedEventGameObject)
                             {
                                 if (i == 1 && !hasSpells)
                                 {
@@ -107,7 +111,7 @@ public class TurnManager : MonoBehaviour
                 case COMMANDSTATE.ATTACK: // Navigating attack command menu (selecting target)
                     for (int i = 0; i < enemies.Count; i++)
                     {
-                        if (attackCommandButtons[i] == EventSystem.current.currentSelectedGameObject)
+                        if (attackCommandButtons[i] == selectedEventGameObject)
                         {
                             targetEnemy = i;
                             break;
@@ -117,7 +121,7 @@ public class TurnManager : MonoBehaviour
                     targetArrow.transform.position = enemies[targetEnemy].transform.position + Vector3.up * 2;
                     targetArrow.SetActive(true);
 
-                    commandArrow.GetComponent<RectTransform>().localPosition = EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform>().localPosition + commandArrowOffset;
+                    commandArrowRectTransform.localPosition = selectedEventrectTransform.localPosition + commandArrowOffset;
 
                     if (Input.GetKeyDown(KeyCode.Return))
                     {
@@ -126,13 +130,13 @@ public class TurnManager : MonoBehaviour
                     }
                     break;
                 case COMMANDSTATE.MAGIC: // Navigating magic command menu (selecting spell)
-                    commandArrow.GetComponent<RectTransform>().localPosition = EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform>().localPosition + commandArrowOffset;
+                    commandArrowRectTransform.localPosition = selectedEventrectTransform.localPosition + commandArrowOffset;
 
                     if (Input.GetKeyDown(KeyCode.Return))
                     {
                         for (int i = 0; i < magicCommandButtons.Count; i++)
                         {
-                            if (magicCommandButtons[i] == EventSystem.current.currentSelectedGameObject)
+                            if (magicCommandButtons[i] == selectedEventGameObject)
                             {
                                 selectedSpell = i;
                                 if (players[entityTurn].GetComponent<BaseClass>().GetSpells(i) == BaseClass.SPELLS.CURE)
@@ -152,7 +156,7 @@ public class TurnManager : MonoBehaviour
                 case COMMANDSTATE.MAGICATTACK: // Navigating attack command menu after choosing a spell (enemies)
                     for (int i = 0; i < enemies.Count; i++)
                     {
-                        if (attackCommandButtons[i] == EventSystem.current.currentSelectedGameObject)
+                        if (attackCommandButtons[i] == selectedEventGameObject)
                         {
                             targetEnemy = i;
                             break;
@@ -162,7 +166,7 @@ public class TurnManager : MonoBehaviour
                     targetArrow.transform.position = enemies[targetEnemy].transform.position + Vector3.up * 2;
                     targetArrow.SetActive(true);
 
-                    commandArrow.GetComponent<RectTransform>().localPosition = EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform>().localPosition + commandArrowOffset;
+                    commandArrowRectTransform.localPosition = selectedEventrectTransform.localPosition + commandArrowOffset;
 
                     if (Input.GetKeyDown(KeyCode.Return))
                     {
@@ -173,7 +177,7 @@ public class TurnManager : MonoBehaviour
                 case COMMANDSTATE.MAGICHEAL: // Navigating attack command menu after choosing a spell (allies)
                     for (int i = 0; i < players.Count; i++)
                     {
-                        if (attackCommandButtons[i] == EventSystem.current.currentSelectedGameObject)
+                        if (attackCommandButtons[i] == selectedEventGameObject)
                         {
                             targetAlly = i;
                             break;
@@ -183,7 +187,7 @@ public class TurnManager : MonoBehaviour
                     targetArrow.transform.position = players[targetAlly].transform.position + Vector3.up * 2;
                     targetArrow.SetActive(true);
 
-                    commandArrow.GetComponent<RectTransform>().localPosition = EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform>().localPosition + commandArrowOffset;
+                    commandArrowRectTransform.localPosition = selectedEventrectTransform.localPosition + commandArrowOffset;
 
                     if (Input.GetKeyDown(KeyCode.Return))
                     {
@@ -192,7 +196,7 @@ public class TurnManager : MonoBehaviour
                     }
                     break;
                 case COMMANDSTATE.PROCESSLIMIT: // Navigating first menu (limit is the only option)
-                    commandArrow.GetComponent<RectTransform>().localPosition = EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform>().localPosition + commandArrowOffset;
+                    commandArrowRectTransform.localPosition = selectedEventrectTransform.localPosition + commandArrowOffset;
 
                     if (Input.GetKeyDown(KeyCode.Return))
                     {
@@ -204,7 +208,7 @@ public class TurnManager : MonoBehaviour
                 case COMMANDSTATE.LIMIT: // Navigating attack menu (enemy target)
                     for (int i = 0; i < enemies.Count; i++)
                     {
-                        if (attackCommandButtons[i] == EventSystem.current.currentSelectedGameObject)
+                        if (attackCommandButtons[i] == selectedEventGameObject)
                         {
                             targetEnemy = i;
                             break;
@@ -214,13 +218,15 @@ public class TurnManager : MonoBehaviour
                     targetArrow.transform.position = enemies[targetEnemy].transform.position + Vector3.up * 2;
                     targetArrow.SetActive(true);
 
-                    commandArrow.GetComponent<RectTransform>().localPosition = EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform>().localPosition + commandArrowOffset;
+                    commandArrowRectTransform.localPosition = selectedEventrectTransform.localPosition + commandArrowOffset;
 
                     if (Input.GetKeyDown(KeyCode.Return))
                     {
                         Limit(entityTurn, targetEnemy);
                         prevState = COMMANDSTATE.LIMIT;
                     }
+                    break;
+                case COMMANDSTATE.DEFEND:
                     break;
             }
         }
@@ -253,7 +259,7 @@ public class TurnManager : MonoBehaviour
             else
             {
                 commandPanel.SetActive(true);
-                ClearCommandList(3); // Limit
+                ClearCommandList(98); // Limit
             }
         }
         else if (!isPlayer)
@@ -280,7 +286,7 @@ public class TurnManager : MonoBehaviour
                 }
                 for (int i = 0; i < enemies.Count; i++)
                 {
-                    if (enemies[i].GetComponent<BaseClass>().isAlive)
+                    if (enemies[i].GetComponent<BaseClass>().GetAlive())   
                     {
                         if (!foundfirstAliveEnemy)
                         {
@@ -320,6 +326,8 @@ public class TurnManager : MonoBehaviour
                 currentState = COMMANDSTATE.MAGIC;
                 return;
             case 2: // Selecting ally to heal
+                bool foundfirstAliveAlly= false;
+                int firstAliveAlly = 0;
                 foreach (GameObject go in commandButtons)
                 {
                     go.SetActive(false);
@@ -330,13 +338,22 @@ public class TurnManager : MonoBehaviour
                 }
                 for (int i = 0; i < players.Count; i++)
                 {
-                    attackCommandButtons[i].SetActive(true);
-                    attackCommandButtons[i].GetComponentInChildren<TMP_Text>().text = players[i].GetComponent<BaseClass>().GetName();
+                    if (players[i].GetComponent<BaseClass>().GetAlive())
+                    {
+                        if (!foundfirstAliveAlly)
+                        {
+                            firstAliveAlly = i;
+                            foundfirstAliveAlly = true;
+                        }
+
+                        attackCommandButtons[i].SetActive(true);
+                        attackCommandButtons[i].GetComponentInChildren<TMP_Text>().text = players[i].GetComponent<BaseClass>().GetName();
+                    }
                 }
                 EventSystem.current.SetSelectedGameObject(attackCommandButtons[0]);
                 currentState = COMMANDSTATE.MAGICHEAL;
                 return;
-            case 3: // Clear all commands and display limit command
+            case 98: // Clear all commands and display limit command
                 foreach (GameObject go in commandButtons)
                 {
                     go.SetActive(false);
@@ -406,22 +423,38 @@ public class TurnManager : MonoBehaviour
     {
         if (!playerAttack)
         {
-            entity -= 4;
-            bool meleeAttack = Random.Range(0, 1) == 0;
-            target = Random.Range(0, players.Count);
+            entity -= 4; //Offset as players & enemies are in this list
+
+            BaseClass baseClassRef = enemies[entity].GetComponent<BaseClass>();
+            
+            bool meleeAttack = Random.Range(0, baseClassRef.GetSpellCount()) == 0;
+
+            bool hasTarget = false;
+
+            do
+            {
+                target = Random.Range(0, players.Count);
+                if(players[target].GetComponent<BaseClass>().GetAlive())
+                {
+                    hasTarget = true;
+                }
+            } while (!hasTarget);
+            
+
+            BaseClass targetBaseClassRef = players[target].GetComponent<BaseClass>();
 
             if (meleeAttack)
             {
-                targetPosition = players[target].GetComponent<BaseClass>().GetStartingPos() + attackOffset;
+                targetPosition = targetBaseClassRef.GetStartingPos() + attackOffset;
                 enemies[entity].GetComponent<Animator>().SetTrigger("MeleeAttack");
                 StartCoroutine(enemies[entity].GetComponent<AnimationManager>().AttackAnimLerp(entity, targetPosition, 0.5f));
-                CombatManager.instance.MeleeAttack(enemies[entity].GetComponent<BaseClass>(), players[target].GetComponent<BaseClass>());
+                CombatManager.instance.MeleeAttack(baseClassRef, targetBaseClassRef);
             }
             else
             {
-                // NEED TO HANDLE ENEMY MAGIC ATTACKS
-                enemies[entity].GetComponent<Animator>().SetTrigger("MagicAttack");
-                CombatManager.instance.MeleeAttack(enemies[entity].GetComponent<BaseClass>(), players[target].GetComponent<BaseClass>());
+                selectedSpell = Random.Range(0, baseClassRef.GetSpellCount());
+                enemies[entity].GetComponent<Animator>().SetTrigger("SpellAttack");
+                CombatManager.instance.MagicAttack(baseClassRef, targetBaseClassRef, selectedSpell);
             }
 
             players[target].GetComponent<Animator>().SetTrigger("Damaged");
@@ -431,26 +464,31 @@ public class TurnManager : MonoBehaviour
             ATBBars[entity + 4].GetComponent<ATBBar>().ResetBar();
 
             playerHUDs[target].GetComponent<CharacterHUD>().UpdateStats();
+
+            CheckAlive(target, false);
         }
         else
         {
+            BaseClass baseClassRef = players[entity].GetComponent<BaseClass>();
+            BaseClass targetBaseClassRef = enemies[target].GetComponent<BaseClass>();
+
             if (currentState == COMMANDSTATE.ATTACK && prevState == COMMANDSTATE.PROCESS)
             {
-                targetPosition = enemies[target].GetComponent<BaseClass>().GetStartingPos() - attackOffset;
+                targetPosition = targetBaseClassRef.GetStartingPos() - attackOffset;
                 players[entity].GetComponent<Animator>().SetTrigger("MeleeAttack");
                 StartCoroutine(players[entity].GetComponent<AnimationManager>().AttackAnimLerp(entity, targetPosition, 0.5f));
-                CombatManager.instance.MeleeAttack(players[entity].GetComponent<BaseClass>(), enemies[target].GetComponent<BaseClass>());
+                CombatManager.instance.MeleeAttack(baseClassRef, targetBaseClassRef);
             }
             else if (currentState == COMMANDSTATE.ATTACK && prevState == COMMANDSTATE.MAGIC)
             {
                 players[entity].GetComponent<Animator>().SetTrigger("SpellAttack");
-                CombatManager.instance.MagicAttack(players[entity].GetComponent<BaseClass>(), enemies[target].GetComponent<BaseClass>(), selectedSpell);
+                CombatManager.instance.MagicAttack(baseClassRef, targetBaseClassRef, selectedSpell);
             }
 
             enemies[target].GetComponent<Animator>().SetTrigger("Damaged");
             EndAction(entity, target, false);
         }
-        CheckAlive(target, !playerAttack);
+        CheckAlive(target, true);
     }
 
     public void Heal(int entity, int target)
@@ -466,7 +504,6 @@ public class TurnManager : MonoBehaviour
         players[entity].GetComponent<Animator>().SetTrigger("Limit");
         enemies[target].GetComponent<Animator>().SetTrigger("Damaged");
 
-        StartCoroutine(players[entity].GetComponent<AnimationManager>().AttackAnimLerp(entity, targetPosition, 0.5f));
         CombatManager.instance.LimitAttack(players[entity].GetComponent<BaseClass>(), enemies[target].GetComponent<BaseClass>());
         EndAction(entity, target, true);
         CheckAlive(target, true);
@@ -480,6 +517,7 @@ public class TurnManager : MonoBehaviour
         playerArrow.SetActive(false);
         playerHighlights[entity].SetActive(false);
         targetArrow.SetActive(false);
+
         if (isLimit)
         {
             LimitBars[entity].GetComponent<ATBBar>().ResetBar();
@@ -495,7 +533,7 @@ public class TurnManager : MonoBehaviour
     {
         if (isEnemy)
         {
-            if (!enemies[entity].GetComponent<BaseClass>().isAlive)
+            if (!enemies[entity].GetComponent<BaseClass>().GetAlive())
             {
                 enemies[entity].GetComponent<Animator>().SetTrigger("Death");
             }
@@ -506,7 +544,7 @@ public class TurnManager : MonoBehaviour
         }
         else
         {
-            if (!players[entity].GetComponent<BaseClass>().isAlive)
+            if (!players[entity].GetComponent<BaseClass>().GetAlive())
             {
                 players[entity].GetComponent<Animator>().SetTrigger("Death");
             }
@@ -523,7 +561,7 @@ public class TurnManager : MonoBehaviour
         {
             for (int i = 0; i < enemies.Count; i++)
             {
-                if (enemies[i].GetComponent<BaseClass>().isAlive)
+                if (enemies[i].GetComponent<BaseClass>().GetAlive())
                 {
                     return false;
                 }
@@ -534,7 +572,7 @@ public class TurnManager : MonoBehaviour
         {
             for (int i = 0; i < players.Count; i++)
             {
-                if (players[i].GetComponent<BaseClass>().isAlive)
+                if (players[i].GetComponent<BaseClass>().GetAlive())
                 {
                     return false;
                 }
@@ -554,12 +592,12 @@ public class TurnManager : MonoBehaviour
     void Victory()
     {
         topPanel.SetActive(true);
-        topPanel.GetComponent<TMP_Text>().text = "VICTORY";
+        topPanel.GetComponentInChildren<TMP_Text>().text = "VICTORY";
     }
     void Defeat()
     {
         topPanel.SetActive(true);
-        topPanel.GetComponent<TMP_Text>().text = "DEFEAT";
+        topPanel.GetComponentInChildren<TMP_Text>().text = "DEFEAT";
     }
     public void ResetAfterBattle()
     {
@@ -570,15 +608,22 @@ public class TurnManager : MonoBehaviour
         for (int i = 0; i < enemies.Count; i++)
         {
             BaseClass classref = enemies[i].GetComponent<BaseClass>();
-            
+
+            classref.IncreaseStats();
+
             classref.currentHealthPoints = classref.maxHealthPoints;
             classref.currentManaPoints = classref.maxManaPoints;
-            classref.isAlive = true;
+            classref.SetAlive(true);
             enemies[i].GetComponent<Animator>().ResetTrigger("Death");
             enemies[i].GetComponent<Animator>().SetTrigger("Respawn");
         }
         victory = false;
         defeat = false;
         topPanel.SetActive(false);
+    }
+
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 }

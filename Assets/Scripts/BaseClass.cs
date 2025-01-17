@@ -31,11 +31,11 @@ public class BaseClass : MonoBehaviour
     public new string name;
     public ROLES role;
 
-    public int strength;
-    public int dexterity;
-    public int constitution;
-    public int intelligence;
-    public int wisdom;
+    public float strength;
+    public float dexterity;
+    public float constitution;
+    public float intelligence;
+    public float wisdom;
 
     public bool isAlive = true;
 
@@ -63,27 +63,27 @@ public class BaseClass : MonoBehaviour
         return name;
     }
 
-    public int GetStrength()
+    public float GetStrength()
     {
         return strength;
     }
-    public int GetDexterity()
+    public float GetDexterity()
     {
         return dexterity;
     }
-    public int GetConstitution()
+    public float GetConstitution()
     {
         return constitution;
     }
-    public int GetIntelligence()
+    public float GetIntelligence()
     {
         return intelligence;
     }
-    public int GetWisdom()
+    public float GetWisdom()
     {
         return wisdom;
     }
-    public int GetDamage()
+    public float GetDamage()
     {
         return strength;
     }
@@ -114,7 +114,28 @@ public class BaseClass : MonoBehaviour
         return startingPosition;
     }
 
-    public void UpdateHealth(int value, bool damage)
+    public bool GetAlive()
+    {
+        return isAlive;
+    }
+
+    public void SetAlive(bool alive)
+    {
+        isAlive = alive;
+    }
+
+    public void IncreaseStats()
+    {
+        maxHealthPoints += 10;
+        maxManaPoints += 5;
+        strength += 1;
+        dexterity += 1;
+        constitution += 1;
+        intelligence += 1;
+        wisdom += 1;
+}
+
+    public void UpdateHealth(float value, bool damage)
     {
         if(damage)
         {

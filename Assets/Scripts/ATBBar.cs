@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class ATBBar : MonoBehaviour
 {
-    public GameObject thisObj;
+    public GameObject referenceObj;
     public int entityID;
     public bool isPlayer;
     public bool isATBBar;
@@ -14,7 +14,7 @@ public class ATBBar : MonoBehaviour
 
     void Awake()
     {
-        thisObj = this.gameObject;
+        referenceObj = this.gameObject;
     }
 
     void Update()
