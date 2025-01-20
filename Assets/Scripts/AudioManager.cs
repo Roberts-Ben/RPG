@@ -43,6 +43,49 @@ public class AudioManager : MonoBehaviour
         {
             return;
         }
+
+        Debug.Log(name + " : " + s.clip);
+
         s.source.Play();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            PlayAudio("Death");
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            PlayAudio("Respawn");
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            StopAudio("BGM");
+            PlayAudio("Victory");
+        }
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            StopAudio("BGM");
+            PlayAudio("Defeat");
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            PlayAudio("Menu Navigation");
+        }
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            PlayAudio("Menu Select");
+        }
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            PlayAudio("Menu Back");
+        }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            PlayAudio("Menu Invalid");
+        }
     }
 }

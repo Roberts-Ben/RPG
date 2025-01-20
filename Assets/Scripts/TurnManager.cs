@@ -133,6 +133,12 @@ public class TurnManager : MonoBehaviour
                         Attack(entityTurn, targetEnemy, true);
                         prevState = COMMANDSTATE.ATTACK;
                     }
+                    if (Input.GetKey(KeyCode.Escape))
+                    {
+                        currentState = prevState;
+                        ClearCommandList(99);
+                        return;
+                    }
                     break;
                 case COMMANDSTATE.MAGIC: // Navigating magic command menu (selecting spell)
                     commandArrowRectTransform.localPosition = selectedEventrectTransform.localPosition + commandArrowOffset;
@@ -156,6 +162,12 @@ public class TurnManager : MonoBehaviour
                                 return;
                             }
                         }
+                        if (Input.GetKey(KeyCode.Escape))
+                        {
+                            currentState = prevState;
+                            ClearCommandList(99);
+                            return;
+                        }
                     }
                     break;
                 case COMMANDSTATE.MAGICATTACK: // Navigating attack command menu after choosing a spell (enemies)
@@ -178,6 +190,12 @@ public class TurnManager : MonoBehaviour
                         Attack(entityTurn, targetEnemy, true);
                         prevState = COMMANDSTATE.MAGICATTACK;
                     }
+                    if (Input.GetKey(KeyCode.Escape))
+                    {
+                        currentState = prevState;
+                        ClearCommandList(1);
+                        return;
+                    }
                     break;
                 case COMMANDSTATE.MAGICHEAL: // Navigating attack command menu after choosing a spell (allies)
                     for (int i = 0; i < players.Count; i++)
@@ -198,6 +216,12 @@ public class TurnManager : MonoBehaviour
                     {
                         Heal(entityTurn, targetAlly);
                         prevState = COMMANDSTATE.MAGICHEAL;
+                    }
+                    if (Input.GetKey(KeyCode.Escape))
+                    {
+                        currentState = prevState;
+                        ClearCommandList(1);
+                        return;
                     }
                     break;
                 case COMMANDSTATE.PROCESSLIMIT: // Navigating first menu (limit is the only option)
@@ -229,6 +253,12 @@ public class TurnManager : MonoBehaviour
                     {
                         Limit(entityTurn, targetEnemy);
                         prevState = COMMANDSTATE.LIMIT;
+                    }
+                    if (Input.GetKey(KeyCode.Escape))
+                    {
+                        currentState = prevState;
+                        ClearCommandList(99);
+                        return;
                     }
                     break;
                 case COMMANDSTATE.DEFEND:
@@ -564,8 +594,8 @@ public class TurnManager : MonoBehaviour
         {
             if (!enemies[entity].GetComponent<BaseClass>().GetAlive())
             {
-                enemies[entity].GetComponent<Animator>().SetTrigger("Death");
                 AudioManager.instance.PlayAudio("Death");
+                enemies[entity].GetComponent<Animator>().SetTrigger("Death");
             }
             if (IsTeamWiped(isEnemy))
             {
@@ -576,8 +606,8 @@ public class TurnManager : MonoBehaviour
         {
             if (!players[entity].GetComponent<BaseClass>().GetAlive())
             {
-                players[entity].GetComponent<Animator>().SetTrigger("Death");
                 AudioManager.instance.PlayAudio("Death");
+                players[entity].GetComponent<Animator>().SetTrigger("Death");
             }
             if (IsTeamWiped(isEnemy))
             {
@@ -653,8 +683,13 @@ public class TurnManager : MonoBehaviour
             classref.SetAlive(true);
             enemies[i].GetComponent<Animator>().ResetTrigger("Death");
             enemies[i].GetComponent<Animator>().SetTrigger("Respawn");
+
             AudioManager.instance.PlayAudio("Respawn");
         }
+        AudioManager.instance.StopAudio("Victory");
+        AudioManager.instance.StopAudio("Defeat");
+        AudioManager.instance.PlayAudio("BGM");
+
         victory = false;
         defeat = false;
         topPanel.SetActive(false);
