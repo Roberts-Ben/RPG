@@ -38,16 +38,21 @@ public class BaseClass : MonoBehaviour
     public float wisdom;
 
     public bool isAlive = true;
+    public bool isDefending = false;
 
     public int LimitDamage;
 
     public List<SPELLS> spells;
     public List<ITEMS> items;
 
+    public GameObject shieldObject;
+
     public float maxHealthPoints;
     public float currentHealthPoints;
     public float maxManaPoints;
     public float currentManaPoints;
+
+    private float spellCost = 5f;
 
     public GameObject referenceObj;
     public Vector3 startingPosition;
@@ -95,6 +100,14 @@ public class BaseClass : MonoBehaviour
     {
         return (int)currentManaPoints;
     }
+    public int GetMaxHealth()
+    {
+        return (int)maxHealthPoints;
+    }
+    public int GetMaxMana()
+    {
+        return (int)maxManaPoints;
+    }
 
     public int GetSpellCount()
     {
@@ -103,6 +116,14 @@ public class BaseClass : MonoBehaviour
     public SPELLS GetSpells (int index)
     {
         return spells[index];
+    }
+    public float GetSpellCost()
+    {
+        return spellCost; ;
+    }
+    public bool CanAffordSpell()
+    {
+        return spellCost <= currentManaPoints;
     }
     public int GetItemCount()
     {
@@ -123,6 +144,19 @@ public class BaseClass : MonoBehaviour
     {
         isAlive = alive;
     }
+    public bool GetDefending()
+    {
+        return isDefending;
+    }
+    public void SetDefending(bool defending)
+    {
+        isDefending = defending;
+    }
+
+    public void SetShieldState(bool shieldAtive)
+    {
+        shieldObject.SetActive(shieldAtive);
+    }
 
     public void IncreaseStats()
     {
@@ -133,7 +167,7 @@ public class BaseClass : MonoBehaviour
         constitution += 1;
         intelligence += 1;
         wisdom += 1;
-}
+    }
 
     public void UpdateHealth(float value, bool damage)
     {
@@ -154,6 +188,14 @@ public class BaseClass : MonoBehaviour
                 currentHealthPoints = maxHealthPoints;
             }
         } 
+    }
+    public void UpdateMana()
+    {
+        currentManaPoints -= spellCost;
+        if (currentManaPoints <= 0)
+        {
+            currentManaPoints = 0;
+        }
     }
 
     public GameObject GetObj()

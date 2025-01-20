@@ -10,11 +10,13 @@ public class ATBBar : MonoBehaviour
     public Image fillBar;
 
     public float fillDuration;
-    private float fillAmount;
+    public float fillAmount;
+    public float startingFill;
 
     void Awake()
     {
         referenceObj = this.gameObject;
+        fillAmount = startingFill;
     }
 
     void Update()
@@ -26,7 +28,7 @@ public class ATBBar : MonoBehaviour
                 return;
             }
 
-            if (fillAmount >= 1)
+            if (fillAmount >= fillDuration)
             {
                 if (!isPlayer)
                 {
@@ -39,15 +41,21 @@ public class ATBBar : MonoBehaviour
                 {
                     TurnManager.instance.TurnReady(entityID, isATBBar, isPlayer);
                 }
+
+                AudioManager.instance.PlayAudio("Menu Navigation");
             }
 
-            fillAmount += 1.0f / fillDuration * Time.deltaTime;
-            fillBar.fillAmount = fillAmount;
+            fillAmount += 1.0f  * Time.deltaTime;
+            fillBar.fillAmount = fillAmount / fillDuration;
         }
     }
 
     public void ResetBar()
     {
         fillAmount = 0;
+    }
+    public void ResetBarNewRound()
+    {
+        fillAmount = startingFill;
     }
 }
