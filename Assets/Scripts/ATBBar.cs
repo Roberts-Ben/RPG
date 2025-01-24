@@ -40,9 +40,8 @@ public class ATBBar : MonoBehaviour
                 else if (TurnManager.instance.players[entityID].GetComponent<BaseClass>().isAlive)
                 {
                     TurnManager.instance.TurnReady(entityID, isATBBar, isPlayer);
+                    AudioManager.instance.PlayAudio("Menu Navigation", false);
                 }
-
-                AudioManager.instance.PlayAudio("Menu Navigation");
             }
 
             fillAmount += 1.0f  * Time.deltaTime;

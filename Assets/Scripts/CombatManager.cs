@@ -32,7 +32,7 @@ public class CombatManager : MonoBehaviour
             damage = 0;
         }
 
-        AudioManager.instance.PlayAudio("Melee Attack");
+        AudioManager.instance.PlayAudio("Melee Attack", false);
 
         target.UpdateHealth(damage, true);
         SpawnDamageText(damage, target, true);
@@ -52,7 +52,7 @@ public class CombatManager : MonoBehaviour
         Instantiate(spellPrefabs[spell], target.GetStartingPos(), Quaternion.identity);
 
         Debug.LogWarning(spellPrefabs[spell].name);
-        AudioManager.instance.PlayAudio(spellPrefabs[spell].name);
+        AudioManager.instance.PlayAudio(spellPrefabs[spell].name, false);
 
         if (damage < 0)
         {
@@ -74,7 +74,7 @@ public class CombatManager : MonoBehaviour
 
         Instantiate(spellPrefabs[3], target.GetStartingPos(), Quaternion.identity);
 
-        AudioManager.instance.PlayAudio("Cure");
+        AudioManager.instance.PlayAudio("Cure", false);
 
         entity.UpdateMana();
 
@@ -84,7 +84,7 @@ public class CombatManager : MonoBehaviour
 
     public void LimitAttack(BaseClass entity, BaseClass target)
     {
-        AudioManager.instance.PlayAudio("Limit");
+        AudioManager.instance.PlayAudio("Limit", false);
         target.UpdateHealth(entity.LimitDamage, true);
         SpawnDamageText(entity.LimitDamage, target, true);
     }

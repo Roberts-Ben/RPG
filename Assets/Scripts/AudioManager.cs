@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using UnityEngine.Audio;
+using UnityEngine.UIElements;
 
 public class AudioManager : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class AudioManager : MonoBehaviour
             s.source.pitch = s.pitch;
         }
 
-        PlayAudio("BGM");
+        PlayAudio("BGM", true);
     }
 
     public void StopAudio(string name)
@@ -35,7 +36,7 @@ public class AudioManager : MonoBehaviour
         }
         s.source.Stop();
     }
-    public void PlayAudio(string name)
+    public void PlayAudio(string name, bool loop)
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
 
@@ -44,48 +45,50 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
-        Debug.Log(name + " : " + s.clip);
+        //Debug.Log(name + " : " + s.clip);
 
+        s.source.loop = loop;
         s.source.Play();
+        
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            PlayAudio("Death");
+            PlayAudio("Death", false);
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            PlayAudio("Respawn");
+            PlayAudio("Respawn", false);
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
             StopAudio("BGM");
-            PlayAudio("Victory");
+            PlayAudio("Victory", false);
         }
         if (Input.GetKeyDown(KeyCode.T))
         {
             StopAudio("BGM");
-            PlayAudio("Defeat");
+            PlayAudio("Defeat", false);
         }
 
 
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            PlayAudio("Menu Navigation");
+            PlayAudio("Menu Navigation", false);
         }
         if (Input.GetKeyDown(KeyCode.U))
         {
-            PlayAudio("Menu Select");
+            PlayAudio("Menu Select", false);
         }
         if (Input.GetKeyDown(KeyCode.I))
         {
-            PlayAudio("Menu Back");
+            PlayAudio("Menu Back", false);
         }
         if (Input.GetKeyDown(KeyCode.O))
         {
-            PlayAudio("Menu Invalid");
+            PlayAudio("Menu Invalid", false);
         }
     }
 }

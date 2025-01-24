@@ -33,6 +33,8 @@ public class TurnManager : MonoBehaviour
     public GameObject targetArrow;
     public GameObject shieldObject;
 
+    GameObject selectedEventGameObject = EventSystem.current.firstSelectedGameObject;
+
     private bool victory = false;
     private bool defeat = false;
 
@@ -80,8 +82,13 @@ public class TurnManager : MonoBehaviour
 
     void Update()
     {
-        GameObject selectedEventGameObject = EventSystem.current.currentSelectedGameObject;
+        if (EventSystem.current.currentSelectedGameObject != selectedEventGameObject)
+        {
+            AudioManager.instance.PlayAudio("Menu Navigation", false);
+        }
+        selectedEventGameObject = EventSystem.current.currentSelectedGameObject;
         RectTransform selectedEventrectTransform = selectedEventGameObject.GetComponent<RectTransform>();
+
         if (!victory && !defeat)
         {
             switch (currentState)
@@ -106,8 +113,8 @@ public class TurnManager : MonoBehaviour
                                     break;
                                 }
                                 activeCommand = i;
-                                ClearCommandList(activeCommand);
                                 prevState = COMMANDSTATE.PROCESS;
+                                ClearCommandList(activeCommand);
                                 return;
                             }
                         }
@@ -133,8 +140,9 @@ public class TurnManager : MonoBehaviour
                         Attack(entityTurn, targetEnemy, true);
                         prevState = COMMANDSTATE.ATTACK;
                     }
-                    if (Input.GetKey(KeyCode.Escape))
+                    if (Input.GetKeyDown(KeyCode.Escape))
                     {
+                        Debug.LogWarning("backing out of enemy attack");
                         currentState = prevState;
                         ClearCommandList(99);
                         return;
@@ -150,6 +158,7 @@ public class TurnManager : MonoBehaviour
                             if (magicCommandButtons[i] == selectedEventGameObject)
                             {
                                 selectedSpell = i;
+                                prevState = COMMANDSTATE.MAGIC;
                                 if (players[entityTurn].GetComponent<BaseClass>().GetSpells(i) == BaseClass.SPELLS.CURE)
                                 {
                                     ClearCommandList(5); // Healing
@@ -158,19 +167,20 @@ public class TurnManager : MonoBehaviour
                                 {
                                     ClearCommandList(0); // Attack
                                 }
-                                prevState = COMMANDSTATE.MAGIC;
                                 return;
                             }
                         }
-                        if (Input.GetKey(KeyCode.Escape))
-                        {
-                            currentState = prevState;
-                            ClearCommandList(99);
-                            return;
-                        }
+                    }
+                    if (Input.GetKeyDown(KeyCode.Escape))
+                    {
+                        Debug.LogWarning("backing out of magic spell selection");
+                        currentState = prevState;
+                        ClearCommandList(99);
+                        return;
                     }
                     break;
                 case COMMANDSTATE.MAGICATTACK: // Navigating attack command menu after choosing a spell (enemies)
+                    Debug.LogWarning("magic target selection");
                     for (int i = 0; i < enemies.Count; i++)
                     {
                         if (attackCommandButtons[i] == selectedEventGameObject)
@@ -190,8 +200,9 @@ public class TurnManager : MonoBehaviour
                         Attack(entityTurn, targetEnemy, true);
                         prevState = COMMANDSTATE.MAGICATTACK;
                     }
-                    if (Input.GetKey(KeyCode.Escape))
+                    if (Input.GetKeyDown(KeyCode.Escape))
                     {
+                        Debug.LogWarning("backing out of magic attack selection");
                         currentState = prevState;
                         ClearCommandList(1);
                         return;
@@ -217,8 +228,9 @@ public class TurnManager : MonoBehaviour
                         Heal(entityTurn, targetAlly);
                         prevState = COMMANDSTATE.MAGICHEAL;
                     }
-                    if (Input.GetKey(KeyCode.Escape))
+                    if (Input.GetKeyDown(KeyCode.Escape))
                     {
+                        Debug.LogWarning("backing out of heal target selection");
                         currentState = prevState;
                         ClearCommandList(1);
                         return;
@@ -254,8 +266,9 @@ public class TurnManager : MonoBehaviour
                         Limit(entityTurn, targetEnemy);
                         prevState = COMMANDSTATE.LIMIT;
                     }
-                    if (Input.GetKey(KeyCode.Escape))
+                    if (Input.GetKeyDown(KeyCode.Escape))
                     {
+                        Debug.LogWarning("backing out of limit target selection");
                         currentState = prevState;
                         ClearCommandList(99);
                         return;
@@ -341,13 +354,22 @@ public class TurnManager : MonoBehaviour
                 {
                     currentState = COMMANDSTATE.LIMIT;
                 }
+                else if(prevState == COMMANDSTATE.MAGIC)
+                {
+                    currentState = COMMANDSTATE.MAGICATTACK;
+                }
                 else
                 {
                     currentState = COMMANDSTATE.ATTACK;
                 }
                 return;
             case 1: // Selecting spell to use
+                Debug.LogWarning("magic select");
                 foreach (GameObject go in commandButtons)
+                {
+                    go.SetActive(false);
+                }
+                foreach (GameObject go in attackCommandButtons)
                 {
                     go.SetActive(false);
                 }
@@ -563,7 +585,7 @@ public class TurnManager : MonoBehaviour
 
         if(isDefending)
         {
-            AudioManager.instance.PlayAudio("Defend");
+            AudioManager.instance.PlayAudio("Defend", false);
         }
     }
 
@@ -594,7 +616,7 @@ public class TurnManager : MonoBehaviour
         {
             if (!enemies[entity].GetComponent<BaseClass>().GetAlive())
             {
-                AudioManager.instance.PlayAudio("Death");
+                AudioManager.instance.PlayAudio("Death", false);
                 enemies[entity].GetComponent<Animator>().SetTrigger("Death");
             }
             if (IsTeamWiped(isEnemy))
@@ -606,7 +628,7 @@ public class TurnManager : MonoBehaviour
         {
             if (!players[entity].GetComponent<BaseClass>().GetAlive())
             {
-                AudioManager.instance.PlayAudio("Death");
+                AudioManager.instance.PlayAudio("Death", false);
                 players[entity].GetComponent<Animator>().SetTrigger("Death");
             }
             if (IsTeamWiped(isEnemy))
@@ -656,7 +678,7 @@ public class TurnManager : MonoBehaviour
         nextBattleButton.SetActive(true);
         topPanel.GetComponentInChildren<TMP_Text>().text = "VICTORY";
         AudioManager.instance.StopAudio("BGM");
-        AudioManager.instance.PlayAudio("Victory");
+        AudioManager.instance.PlayAudio("Victory", true);
     }
     void Defeat()
     {
@@ -664,7 +686,7 @@ public class TurnManager : MonoBehaviour
         nextBattleButton.SetActive(false);
         topPanel.GetComponentInChildren<TMP_Text>().text = "DEFEAT";
         AudioManager.instance.StopAudio("BGM");
-        AudioManager.instance.PlayAudio("Defeat");
+        AudioManager.instance.PlayAudio("Defeat", false);
     }
     public void ResetAfterBattle()
     {
@@ -684,11 +706,11 @@ public class TurnManager : MonoBehaviour
             enemies[i].GetComponent<Animator>().ResetTrigger("Death");
             enemies[i].GetComponent<Animator>().SetTrigger("Respawn");
 
-            AudioManager.instance.PlayAudio("Respawn");
+            AudioManager.instance.PlayAudio("Respawn", false);
         }
         AudioManager.instance.StopAudio("Victory");
         AudioManager.instance.StopAudio("Defeat");
-        AudioManager.instance.PlayAudio("BGM");
+        AudioManager.instance.PlayAudio("BGM", true);
 
         victory = false;
         defeat = false;
