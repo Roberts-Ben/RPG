@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using static UnityEngine.GraphicsBuffer;
 using static UnityEngine.EventSystems.EventTrigger;
+using System.Collections;
 
 public class TurnManager : MonoBehaviour
 {
@@ -33,7 +34,8 @@ public class TurnManager : MonoBehaviour
     public GameObject targetArrow;
     public GameObject shieldObject;
 
-    GameObject selectedEventGameObject = EventSystem.current.firstSelectedGameObject;
+    private GameObject selectedEventGameObject;
+    private RectTransform selectedEventrectTransform;
 
     private bool victory = false;
     private bool defeat = false;
@@ -65,7 +67,8 @@ public class TurnManager : MonoBehaviour
         ITEM,
         ITEMUSE,
         PROCESSLIMIT,
-        LIMIT
+        LIMIT,
+        BATTLEOVER
     }
 
     public COMMANDSTATE currentState;
@@ -78,6 +81,8 @@ public class TurnManager : MonoBehaviour
             instance = this;
         }
         commandArrowRectTransform = commandArrow.GetComponent<RectTransform>();
+        selectedEventGameObject = EventSystem.current.firstSelectedGameObject;
+        selectedEventrectTransform = selectedEventGameObject.GetComponent<RectTransform>();
     }
 
     void Update()
@@ -85,9 +90,13 @@ public class TurnManager : MonoBehaviour
         if (EventSystem.current.currentSelectedGameObject != selectedEventGameObject)
         {
             AudioManager.instance.PlayAudio("Menu Navigation", false);
+            selectedEventGameObject = EventSystem.current.currentSelectedGameObject;
         }
-        selectedEventGameObject = EventSystem.current.currentSelectedGameObject;
-        RectTransform selectedEventrectTransform = selectedEventGameObject.GetComponent<RectTransform>();
+
+        if (selectedEventGameObject != null)
+        {
+            selectedEventrectTransform = selectedEventGameObject.GetComponent<RectTransform>();
+        }
 
         if (!victory && !defeat)
         {
@@ -106,12 +115,15 @@ public class TurnManager : MonoBehaviour
                             {
                                 if (i == 1 && !hasSpells || i == 1 && !canAffordSpell)
                                 {
+                                    AudioManager.instance.PlayAudio("Menu Invalid", false);
                                     break;
                                 }
                                 else if (i == 3 && !hasItems)
                                 {
+                                    AudioManager.instance.PlayAudio("Menu Invalid", false);
                                     break;
                                 }
+                                AudioManager.instance.PlayAudio("Menu Select", false);
                                 activeCommand = i;
                                 prevState = COMMANDSTATE.PROCESS;
                                 ClearCommandList(activeCommand);
@@ -137,12 +149,13 @@ public class TurnManager : MonoBehaviour
 
                     if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
                     {
+                        AudioManager.instance.PlayAudio("Menu Select", false);
                         Attack(entityTurn, targetEnemy, true);
                         prevState = COMMANDSTATE.ATTACK;
                     }
                     if (Input.GetKeyDown(KeyCode.Escape))
                     {
-                        Debug.LogWarning("backing out of enemy attack");
+                        AudioManager.instance.PlayAudio("Menu Back", false);
                         currentState = prevState;
                         ClearCommandList(99);
                         return;
@@ -157,6 +170,7 @@ public class TurnManager : MonoBehaviour
                         {
                             if (magicCommandButtons[i] == selectedEventGameObject)
                             {
+                                AudioManager.instance.PlayAudio("Menu Select", false);
                                 selectedSpell = i;
                                 prevState = COMMANDSTATE.MAGIC;
                                 if (players[entityTurn].GetComponent<BaseClass>().GetSpells(i) == BaseClass.SPELLS.CURE)
@@ -173,14 +187,13 @@ public class TurnManager : MonoBehaviour
                     }
                     if (Input.GetKeyDown(KeyCode.Escape))
                     {
-                        Debug.LogWarning("backing out of magic spell selection");
+                        AudioManager.instance.PlayAudio("Menu Back", false);
                         currentState = prevState;
                         ClearCommandList(99);
                         return;
                     }
                     break;
                 case COMMANDSTATE.MAGICATTACK: // Navigating attack command menu after choosing a spell (enemies)
-                    Debug.LogWarning("magic target selection");
                     for (int i = 0; i < enemies.Count; i++)
                     {
                         if (attackCommandButtons[i] == selectedEventGameObject)
@@ -197,12 +210,13 @@ public class TurnManager : MonoBehaviour
 
                     if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
                     {
+                        AudioManager.instance.PlayAudio("Menu Select", false);
                         Attack(entityTurn, targetEnemy, true);
                         prevState = COMMANDSTATE.MAGICATTACK;
                     }
                     if (Input.GetKeyDown(KeyCode.Escape))
                     {
-                        Debug.LogWarning("backing out of magic attack selection");
+                        AudioManager.instance.PlayAudio("Menu Back", false);
                         currentState = prevState;
                         ClearCommandList(1);
                         return;
@@ -225,12 +239,13 @@ public class TurnManager : MonoBehaviour
 
                     if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
                     {
+                        AudioManager.instance.PlayAudio("Menu Select", false);
                         Heal(entityTurn, targetAlly);
                         prevState = COMMANDSTATE.MAGICHEAL;
                     }
                     if (Input.GetKeyDown(KeyCode.Escape))
                     {
-                        Debug.LogWarning("backing out of heal target selection");
+                        AudioManager.instance.PlayAudio("Menu Back", false);
                         currentState = prevState;
                         ClearCommandList(1);
                         return;
@@ -241,6 +256,7 @@ public class TurnManager : MonoBehaviour
 
                     if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
                     {
+                        AudioManager.instance.PlayAudio("Menu Select", false);
                         prevState = COMMANDSTATE.PROCESSLIMIT;
                         ClearCommandList(0);
                         return;
@@ -263,12 +279,13 @@ public class TurnManager : MonoBehaviour
 
                     if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
                     {
+                        AudioManager.instance.PlayAudio("Menu Select", false);
                         Limit(entityTurn, targetEnemy);
                         prevState = COMMANDSTATE.LIMIT;
                     }
                     if (Input.GetKeyDown(KeyCode.Escape))
                     {
-                        Debug.LogWarning("backing out of limit target selection");
+                        AudioManager.instance.PlayAudio("Menu Back", false);
                         currentState = prevState;
                         ClearCommandList(99);
                         return;
@@ -280,13 +297,17 @@ public class TurnManager : MonoBehaviour
                     break;
             }
         }
-        else if (victory)
+        else if (currentState != COMMANDSTATE.BATTLEOVER)
         {
-            Victory();
-        }
-        else if (defeat)
-        {
-            Defeat();
+            if (victory)
+            {
+                Victory();
+            }
+            else if (defeat)
+            {
+                Defeat();
+            }
+            currentState = COMMANDSTATE.BATTLEOVER;
         }
     }
 
@@ -364,7 +385,7 @@ public class TurnManager : MonoBehaviour
                 }
                 return;
             case 1: // Selecting spell to use
-                Debug.LogWarning("magic select");
+                targetArrow.SetActive(false);
                 foreach (GameObject go in commandButtons)
                 {
                     go.SetActive(false);
@@ -435,6 +456,8 @@ public class TurnManager : MonoBehaviour
                 currentState = COMMANDSTATE.PROCESSLIMIT;
                 return;
             case 99: // Default Clearall, back to the initial action select commands
+                targetArrow.SetActive(false);
+
                 foreach (GameObject go in attackCommandButtons)
                 {
                     go.SetActive(false);
@@ -539,14 +562,14 @@ public class TurnManager : MonoBehaviour
             BaseClass baseClassRef = players[entity].GetComponent<BaseClass>();
             BaseClass targetBaseClassRef = enemies[target].GetComponent<BaseClass>();
 
-            if (currentState == COMMANDSTATE.ATTACK && prevState == COMMANDSTATE.PROCESS)
+            if (currentState == COMMANDSTATE.ATTACK)
             {
                 targetPosition = targetBaseClassRef.GetStartingPos() - attackOffset;
                 players[entity].GetComponent<Animator>().SetTrigger("MeleeAttack");
                 StartCoroutine(players[entity].GetComponent<AnimationManager>().AttackAnimLerp(entity, targetPosition, 0.5f));
                 CombatManager.instance.MeleeAttack(baseClassRef, targetBaseClassRef);
             }
-            else if (currentState == COMMANDSTATE.ATTACK && prevState == COMMANDSTATE.MAGIC)
+            else if (currentState == COMMANDSTATE.MAGICATTACK)
             {
                 players[entity].GetComponent<Animator>().SetTrigger("SpellAttack");
                 CombatManager.instance.MagicAttack(baseClassRef, targetBaseClassRef, selectedSpell);
@@ -616,7 +639,7 @@ public class TurnManager : MonoBehaviour
         {
             if (!enemies[entity].GetComponent<BaseClass>().GetAlive())
             {
-                AudioManager.instance.PlayAudio("Death", false);
+                StartCoroutine(DeathAudio());
                 enemies[entity].GetComponent<Animator>().SetTrigger("Death");
             }
             if (IsTeamWiped(isEnemy))
@@ -628,8 +651,10 @@ public class TurnManager : MonoBehaviour
         {
             if (!players[entity].GetComponent<BaseClass>().GetAlive())
             {
-                AudioManager.instance.PlayAudio("Death", false);
+                StartCoroutine(DeathAudio());
                 players[entity].GetComponent<Animator>().SetTrigger("Death");
+                ATBBars[entity].GetComponent<ATBBar>().DisableBar();
+                LimitBars[entity].GetComponent<ATBBar>().DisableBar();
             }
             if (IsTeamWiped(isEnemy))
             {
@@ -706,7 +731,7 @@ public class TurnManager : MonoBehaviour
             enemies[i].GetComponent<Animator>().ResetTrigger("Death");
             enemies[i].GetComponent<Animator>().SetTrigger("Respawn");
 
-            AudioManager.instance.PlayAudio("Respawn", false);
+            
         }
         AudioManager.instance.StopAudio("Victory");
         AudioManager.instance.StopAudio("Defeat");
@@ -715,10 +740,18 @@ public class TurnManager : MonoBehaviour
         victory = false;
         defeat = false;
         topPanel.SetActive(false);
+
+        currentState = COMMANDSTATE.IDLE;
     }
 
     public void ReturnToMenu()
     {
         SceneManager.LoadScene(0);
+    }
+
+    IEnumerator DeathAudio()
+    {
+        yield return new WaitForSeconds(0.5f);
+        AudioManager.instance.PlayAudio("Death", false);
     }
 }

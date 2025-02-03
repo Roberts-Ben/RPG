@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class ATBBar : MonoBehaviour
 {
     public GameObject referenceObj;
+    private BaseClass baseClassRef;
     public int entityID;
     public bool isPlayer;
     public bool isATBBar;
@@ -19,6 +20,18 @@ public class ATBBar : MonoBehaviour
         fillAmount = startingFill;
     }
 
+    private void Start()
+    {
+        if (isPlayer)
+        {
+            baseClassRef = TurnManager.instance.players[entityID].GetComponent<BaseClass>();
+        }
+        else
+        {
+            baseClassRef = TurnManager.instance.enemies[entityID - 4].GetComponent<BaseClass>();
+        }
+    }
+
     void Update()
     {
         if(!TurnManager.instance.GetBattleOver())
@@ -30,22 +43,20 @@ public class ATBBar : MonoBehaviour
 
             if (fillAmount >= fillDuration)
             {
-                if (!isPlayer)
-                {
-                    if (TurnManager.instance.enemies[entityID - 4].GetComponent<BaseClass>().isAlive)
-                    {
-                        TurnManager.instance.TurnReady(entityID, isATBBar, isPlayer);
-                    }
-                }
-                else if (TurnManager.instance.players[entityID].GetComponent<BaseClass>().isAlive)
+                if (baseClassRef.isAlive)
                 {
                     TurnManager.instance.TurnReady(entityID, isATBBar, isPlayer);
-                    AudioManager.instance.PlayAudio("Menu Navigation", false);
+                    if (isPlayer)
+                    {
+                        AudioManager.instance.PlayAudio("Menu Navigation", false);
+                    }
                 }
             }
-
-            fillAmount += 1.0f  * Time.deltaTime;
-            fillBar.fillAmount = fillAmount / fillDuration;
+            if(baseClassRef.isAlive)
+            {
+                fillAmount += 1.0f * Time.deltaTime;
+                fillBar.fillAmount = fillAmount / fillDuration;
+            } 
         }
     }
 
@@ -56,5 +67,9 @@ public class ATBBar : MonoBehaviour
     public void ResetBarNewRound()
     {
         fillAmount = startingFill;
+    }
+    public void DisableBar()
+    {
+        fillBar.color = Color.grey;
     }
 }

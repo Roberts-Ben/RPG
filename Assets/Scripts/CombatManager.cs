@@ -36,8 +36,6 @@ public class CombatManager : MonoBehaviour
 
         target.UpdateHealth(damage, true);
         SpawnDamageText(damage, target, true);
-        Debug.Log(entity.strength+ " damage inflicted to " + target.GetName());
-        Debug.Log(target.GetName() + " has " + target.GetHealth() + "HP remaining");
     }
 
     public void MagicAttack(BaseClass entity, BaseClass target, int spell)
@@ -51,7 +49,6 @@ public class CombatManager : MonoBehaviour
 
         Instantiate(spellPrefabs[spell], target.GetStartingPos(), Quaternion.identity);
 
-        Debug.LogWarning(spellPrefabs[spell].name);
         AudioManager.instance.PlayAudio(spellPrefabs[spell].name, false);
 
         if (damage < 0)
@@ -63,9 +60,6 @@ public class CombatManager : MonoBehaviour
 
         target.UpdateHealth(damage, true);
         SpawnDamageText(damage, target, true);
-        Debug.Log("Casting spell " + entity.GetSpells(spell));
-        Debug.Log(entity.intelligence + " damage inflicted to " + target.GetName());
-        Debug.Log(target.GetName() + " has " + target.GetHealth() + "HP remaining");
     }
 
     public void MagicHealing(BaseClass entity, BaseClass target)

@@ -1438,7 +1438,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 2
-    m_WrapAround: 0
+    m_WrapAround: 1
     m_SelectOnUp: {fileID: 783216232}
     m_SelectOnDown: {fileID: 1639211888}
     m_SelectOnLeft: {fileID: 0}
@@ -1936,7 +1936,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 2
-    m_WrapAround: 0
+    m_WrapAround: 1
     m_SelectOnUp: {fileID: 1776884067}
     m_SelectOnDown: {fileID: 1854653753}
     m_SelectOnLeft: {fileID: 0}
@@ -2130,7 +2130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 2
-    m_WrapAround: 0
+    m_WrapAround: 1
     m_SelectOnUp: {fileID: 1854653753}
     m_SelectOnDown: {fileID: 1776884067}
     m_SelectOnLeft: {fileID: 0}
@@ -4479,7 +4479,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 2
-    m_WrapAround: 0
+    m_WrapAround: 1
     m_SelectOnUp: {fileID: 1936146131}
     m_SelectOnDown: {fileID: 221936004}
     m_SelectOnLeft: {fileID: 0}
@@ -10661,7 +10661,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 2
-    m_WrapAround: 0
+    m_WrapAround: 1
     m_SelectOnUp: {fileID: 221936004}
     m_SelectOnDown: {fileID: 1936146131}
     m_SelectOnLeft: {fileID: 0}
@@ -11659,7 +11659,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 2
-    m_WrapAround: 0
+    m_WrapAround: 1
     m_SelectOnUp: {fileID: 420788480}
     m_SelectOnDown: {fileID: 413700098}
     m_SelectOnLeft: {fileID: 0}
@@ -11908,7 +11908,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 2
-    m_WrapAround: 0
+    m_WrapAround: 1
     m_SelectOnUp: {fileID: 413700098}
     m_SelectOnDown: {fileID: 420788480}
     m_SelectOnLeft: {fileID: 0}
@@ -12522,11 +12522,6 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     source: {fileID: 0}
-  - name: Respawn
-    clip: {fileID: 8300000, guid: 4e349dc959014a845b9aa317d1c2b7f0, type: 3}
-    volume: 1
-    pitch: 1
-    source: {fileID: 0}
 --- !u!4 &1914885452
 Transform:
   m_ObjectHideFlags: 0
@@ -12633,7 +12628,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 2
-    m_WrapAround: 0
+    m_WrapAround: 1
     m_SelectOnUp: {fileID: 1639211888}
     m_SelectOnDown: {fileID: 783216232}
     m_SelectOnLeft: {fileID: 0}
